@@ -5,4 +5,12 @@ This repository contains the files needed to analyze the data of the compton exp
 ## prerequsites
 
 In order to read the data files which are written in the .fast format, you will need to set up Faster AC framework (faster.in2p3.fr) which is based on the cpp language. However, you may as well use the included pyfaster library to read the data files using python. The nalysis mainly uses ROOT framework with some assistance of other python tools.
+A simulation to the experimental setup is also provided using Geant4 package (geant4.web.cern.ch/)
+After installation of these packages you can clone this repo to start. 
+
 ## Calibrating the detectors.
+To get the calibration curve for the scintaltor detectors, you run, 
+```bash
+cd calibration
+python3 calibration.py
+```
