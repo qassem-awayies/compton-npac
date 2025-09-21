@@ -1,0 +1,7 @@
+/home/qassem/Na22Compton/build/CMakeFiles/Na22Compton.dir
+/home/qassem/Na22Compton/build/CMakeFiles/edit_cache.dir
+/home/qassem/Na22Compton/build/CMakeFiles/rebuild_cache.dir
+/home/qassem/Na22Compton/build/CMakeFiles/list_install_components.dir
+/home/qassem/Na22Compton/build/CMakeFiles/install.dir
+/home/qassem/Na22Compton/build/CMakeFiles/install/local.dir
+/home/qassem/Na22Compton/build/CMakeFiles/install/strip.dir

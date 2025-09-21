@@ -1,0 +1,6 @@
+/vis/open OGL
+/vis/drawVolume
+/vis/scene/add/trajectories
+/run/initialize
+/run/beamOn 1000
+
