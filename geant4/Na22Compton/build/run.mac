@@ -1,0 +1,46 @@
+# run.mac - Geant4 macro file for Na-22 coincidence detection
+
+# Verbose output
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+
+# Initialize visualization (optional - comment out for batch mode)
+/vis/open OGL 800x600-0+0
+/vis/viewer/set/autoRefresh false
+/vis/verbose errors
+
+# Draw the geometry
+/vis/drawVolume
+/vis/viewer/set/viewpointVector -1 0 0
+/vis/viewer/set/lightsVector -1 0 0
+/vis/viewer/set/upVector 0 0 1
+/vis/viewer/zoomTo 1.5
+/vis/viewer/set/style wireframe
+/vis/viewer/set/auxiliaryEdge true
+/vis/viewer/set/lineSegmentsPerCircle 100
+
+# Set detector configurations
+# Try different angles: 90, 120, 180 degrees
+/detector/setDet2Angle 180 deg
+
+# Draw trajectories and hits
+/vis/scene/add/trajectories smooth
+/vis/modeling/trajectories/create/drawByCharge
+/vis/modeling/trajectories/drawByCharge-0/set 1 blue
+/vis/modeling/trajectories/drawByCharge-0/set -1 red
+/vis/modeling/trajectories/drawByCharge-0/set 0 green
+/vis/scene/add/hits
+
+# Set up stepping action for better tracking
+/vis/scene/add/eventID
+
+# Run events - increase for better statistics
+/run/beamOn 10000
+
+# Refresh view
+/vis/viewer/set/autoRefresh true
+/vis/viewer/refresh
+
+# Print final statistics
+/run/printProgress 1000

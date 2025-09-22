@@ -1,16 +1,12 @@
+// ActionInitialization.cc - Updated to pass DetectorSD pointers to EventAction
 #include "ActionInitialization.hh"
-#include "PrimaryGeneratorAction.hh"
 #include "EventAction.hh"
+#include "PrimaryGeneratorAction.hh"
 
-ActionInitialization::ActionInitialization() : G4VUserActionInitialization() {}
-
-ActionInitialization::~ActionInitialization() {}
+ActionInitialization::ActionInitialization(DetectorSD* det1, DetectorSD* det2)
+ : fDet1(det1), fDet2(det2) {}
 
 void ActionInitialization::Build() const {
-    // Primary generator action
     SetUserAction(new PrimaryGeneratorAction());
-
-    // Event action
-    SetUserAction(new EventAction());
+    SetUserAction(new EventAction(fDet1, fDet2));
 }
-

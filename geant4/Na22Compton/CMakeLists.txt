@@ -31,4 +31,9 @@ endif()
 # ---- Install rules (optional) ----
 install(TARGETS Na22Compton DESTINATION bin)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/src/ DESTINATION include FILES_MATCHING PATTERN "*.hh")
+#----- ROOT configuration ____
+find_package(ROOT REQUIRED COMPONENTS Core Hist RIO)
+include_directories(${ROOT_INCLUDE_DIRS})
+link_directories(${ROOT_LIBRARY_DIRS})
+target_link_libraries(Na22Compton ${ROOT_LIBRARIES})
 

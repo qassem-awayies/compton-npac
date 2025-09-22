@@ -1,9 +1,0 @@
-/run/initialize
-/det/setDet2Angle 60 deg
-/vis/open OGL
-/vis/drawVolume
-#/vis/viewer/set/viewpointThetaPhi 90 0
-/vis/scene/add/trajectories
-#/vis/scene/endOfEventAction accumulate
-/run/beamOn 100
-

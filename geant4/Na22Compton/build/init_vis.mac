@@ -1,9 +1,40 @@
+# Na-22 Compton simulation for multiple Detector 2 angles
+
+# Number of events per run
+
+# Define the angles you want to scan (degrees)
+# You can adjust: start, stop, step
+/control/echo true
+/control/verbose 1
+
+# Array of angles (in degrees)
+# Loop over angles in separate "sessions"
+# Each block: set angle -> initialize -> run
+/detector/setDet2Angle 0 deg
 /run/initialize
-#/det/setDet2Angle 60 deg
-/vis/open OGL
-/vis/drawVolume
-#/vis/viewer/set/viewpointThetaPhi 90 0
-/vis/scene/add/trajectories
-#/vis/scene/endOfEventAction accumulate
-/run/beamOn 100
+/run/beamOn 1000
+
+/detector/setDet2Angle 15 deg
+/run/initialize
+/run/beamOn 1000
+
+/detector/setDet2Angle 30 deg
+/run/initialize
+/run/beamOn 1000
+
+/detector/setDet2Angle 45 deg
+/run/initialize
+/run/beamOn 1000
+
+/detector/setDet2Angle 60 deg
+/run/initialize
+/run/beamOn 1000
+
+/detector/setDet2Angle 75 deg
+/run/initialize
+/run/beamOn 1000
+
+/detector/setDet2Angle 90 deg
+/run/initialize
+/run/beamOn 1000
 

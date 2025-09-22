@@ -1,14 +1,15 @@
-#ifndef ACTIONINITIALIZATION_H
-#define ACTIONINITIALIZATION_H
-
+#pragma once
 #include "G4VUserActionInitialization.hh"
+#include "DetectorSD.hh"
 
 class ActionInitialization : public G4VUserActionInitialization {
 public:
-    ActionInitialization();
-    virtual ~ActionInitialization();
-    virtual void Build() const override;
-};
+    ActionInitialization(DetectorSD* det1, DetectorSD* det2);
+    ~ActionInitialization() override {}
+    void Build() const override;
 
-#endif
+private:
+    DetectorSD* fDet1;
+    DetectorSD* fDet2;
+};
 

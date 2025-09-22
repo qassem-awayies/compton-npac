@@ -8,13 +8,15 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/qassem/Na22Compton/src/ActionInitialization.cc" "CMakeFiles/Na22Compton.dir/src/ActionInitialization.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/ActionInitialization.cc.o.d"
-  "/home/qassem/Na22Compton/src/DetectorConstruction.cc" "CMakeFiles/Na22Compton.dir/src/DetectorConstruction.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/DetectorConstruction.cc.o.d"
-  "/home/qassem/Na22Compton/src/DetectorMessenger.cc" "CMakeFiles/Na22Compton.dir/src/DetectorMessenger.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/DetectorMessenger.cc.o.d"
-  "/home/qassem/Na22Compton/src/EventAction.cc" "CMakeFiles/Na22Compton.dir/src/EventAction.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/EventAction.cc.o.d"
-  "/home/qassem/Na22Compton/src/NaISD.cc" "CMakeFiles/Na22Compton.dir/src/NaISD.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/NaISD.cc.o.d"
-  "/home/qassem/Na22Compton/src/PrimaryGeneratorAction.cc" "CMakeFiles/Na22Compton.dir/src/PrimaryGeneratorAction.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/PrimaryGeneratorAction.cc.o.d"
-  "/home/qassem/Na22Compton/src/main.cc" "CMakeFiles/Na22Compton.dir/src/main.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/main.cc.o.d"
+  "/Users/qassem.awayies/Projects/compton-npac/geant4/Na22Compton/src/ActionInitialization.cc" "CMakeFiles/Na22Compton.dir/src/ActionInitialization.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/ActionInitialization.cc.o.d"
+  "/Users/qassem.awayies/Projects/compton-npac/geant4/Na22Compton/src/DetectorConstruction.cc" "CMakeFiles/Na22Compton.dir/src/DetectorConstruction.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/DetectorConstruction.cc.o.d"
+  "/Users/qassem.awayies/Projects/compton-npac/geant4/Na22Compton/src/DetectorHit.cc" "CMakeFiles/Na22Compton.dir/src/DetectorHit.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/DetectorHit.cc.o.d"
+  "/Users/qassem.awayies/Projects/compton-npac/geant4/Na22Compton/src/DetectorMessenger.cc" "CMakeFiles/Na22Compton.dir/src/DetectorMessenger.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/DetectorMessenger.cc.o.d"
+  "/Users/qassem.awayies/Projects/compton-npac/geant4/Na22Compton/src/DetectorSD.cc" "CMakeFiles/Na22Compton.dir/src/DetectorSD.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/DetectorSD.cc.o.d"
+  "/Users/qassem.awayies/Projects/compton-npac/geant4/Na22Compton/src/EventAction.cc" "CMakeFiles/Na22Compton.dir/src/EventAction.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/EventAction.cc.o.d"
+  "/Users/qassem.awayies/Projects/compton-npac/geant4/Na22Compton/src/NaISD.cc" "CMakeFiles/Na22Compton.dir/src/NaISD.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/NaISD.cc.o.d"
+  "/Users/qassem.awayies/Projects/compton-npac/geant4/Na22Compton/src/PrimaryGeneratorAction.cc" "CMakeFiles/Na22Compton.dir/src/PrimaryGeneratorAction.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/PrimaryGeneratorAction.cc.o.d"
+  "/Users/qassem.awayies/Projects/compton-npac/geant4/Na22Compton/src/main.cc" "CMakeFiles/Na22Compton.dir/src/main.cc.o" "gcc" "CMakeFiles/Na22Compton.dir/src/main.cc.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

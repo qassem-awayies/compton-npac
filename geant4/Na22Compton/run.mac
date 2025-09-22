@@ -1,6 +1,21 @@
+# =========================
+# Na-22 Compton Simulation
+# =========================
+
+# --- Set Detector 2 angle (degrees) ---
+# Must be before /run/initialize
+/detector/setDet2Angle 45 deg
+
+# --- Initialize geometry and physics ---
+/run/initialize
+
+# --- Optional: visualization setup ---
 /vis/open OGL
 /vis/drawVolume
+/vis/viewer/set/viewpointThetaPhi 90 0
 /vis/scene/add/trajectories
-/run/initialize
+/vis/scene/endOfEventAction accumulate
+
+# --- Start run ---
 /run/beamOn 1000
 
