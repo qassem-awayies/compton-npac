@@ -72,3 +72,4 @@ ax_inset.legend(fontsize=8)  # keep legend in the inset
 plt.tight_layout()
 plt.savefig("output/E_vs_theta_with_inset_legend.png", dpi=300)
 plt.show()
+
