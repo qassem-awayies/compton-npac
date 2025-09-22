@@ -5800,6 +5800,7 @@ CMakeFiles/Na22Compton.dir/src/EventAction.cc.o: /Users/qassem.awayies/Projects/
   /Users/qassem.awayies/geant4/install/include/Geant4/G4GeomSplitter.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4GlobalConfig.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4HCofThisEvent.hh \
+  /Users/qassem.awayies/geant4/install/include/Geant4/G4HCtable.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4IonisParamElm.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4IonisParamMat.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4Isotope.hh \
@@ -5864,6 +5865,8 @@ CMakeFiles/Na22Compton.dir/src/EventAction.cc.o: /Users/qassem.awayies/Projects/
   /Users/qassem.awayies/geant4/install/include/Geant4/G4RotationMatrix.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4RunManager.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4RunManagerKernel.hh \
+  /Users/qassem.awayies/geant4/install/include/Geant4/G4SDManager.hh \
+  /Users/qassem.awayies/geant4/install/include/Geant4/G4SDStructure.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4SandiaTable.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4SensitiveVolumeList.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4SmartTrackStack.hh \
@@ -5899,7 +5902,9 @@ CMakeFiles/Na22Compton.dir/src/EventAction.cc.o: /Users/qassem.awayies/Projects/
   /Users/qassem.awayies/geant4/install/include/Geant4/G4TrackVector.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4TrackingManager.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4TrackingMessenger.hh \
+  /Users/qassem.awayies/geant4/install/include/Geant4/G4Trajectory.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4TrajectoryContainer.hh \
+  /Users/qassem.awayies/geant4/install/include/Geant4/G4TrajectoryPoint.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4Transform3D.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4Types.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4UIcommand.hh \
@@ -5932,6 +5937,7 @@ CMakeFiles/Na22Compton.dir/src/EventAction.cc.o: /Users/qassem.awayies/Projects/
   /Users/qassem.awayies/geant4/install/include/Geant4/G4VSteppingVerbose.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4VTouchable.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4VTrajectory.hh \
+  /Users/qassem.awayies/geant4/install/include/Geant4/G4VTrajectoryPoint.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4VUserEventInformation.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4VUserTrackInformation.hh \
   /Users/qassem.awayies/geant4/install/include/Geant4/G4VVolumeMaterialScanner.hh \
@@ -9445,6 +9451,12 @@ CMakeFiles/Na22Compton.dir/src/main.cc.o: /Users/qassem.awayies/Projects/compton
 /Users/qassem.awayies/geant4/install/include/Geant4/G4VNotifier.hh:
 
 /Users/qassem.awayies/Projects/compton-npac/geant4/Na22Compton/src/NaISD.hh:
+
+/Users/qassem.awayies/geant4/install/include/Geant4/G4VTrajectoryPoint.hh:
+
+/Users/qassem.awayies/geant4/install/include/Geant4/G4TrajectoryPoint.hh:
+
+/Users/qassem.awayies/geant4/install/include/Geant4/G4Trajectory.hh:
 
 /Users/qassem.awayies/Projects/compton-npac/geant4/Na22Compton/src/EventAction.cc:
 

@@ -241,3 +241,4 @@ with open(dat_file_path,"w") as fdat, open(fit_param_file_path,"w") as ffit:
         g2.Draw("SAME SURF1")
         c.SaveAs(os.path.join(out_dir, f"coinc_{angle}.png"))
         out_root.Close()
+
