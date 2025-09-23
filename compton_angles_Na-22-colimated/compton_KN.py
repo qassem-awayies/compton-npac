@@ -52,7 +52,7 @@ def build_histogram(file_path, nbins=200, e_max=2000):
                 E2_list.append(E)
         for E1 in E1_list:
             for E2 in E2_list:
-                if ((E1 + E2) > 800.) or ( (E1+E2) < 300.):
+                if ((E1 + E2) > 700.) or ( (E1+E2) < 300.):
                     continue
                 h2.Fill(E1, E2)
     return h2
@@ -273,7 +273,9 @@ with open(dat_file_path,"w") as fdat, open(fit_param_file_path,"w") as ffit:
                 idx += 1
 
         c = ROOT.TCanvas(f"c_{angle}", "", 800, 600)
+        line = ROOT.TF1("line", lambda x, p: 511 - x[0], 0, 1000)
         h2.Draw("COLZ")
+        line.Draw("SAME")
         #g2.SetLineColor(ROOT.kRed)
         #g2.SetLineWidth(2)
         #g2.Draw("SAME SURF1")
