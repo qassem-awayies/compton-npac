@@ -4,6 +4,7 @@ import os
 import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
+from scipy.stats import linregress
 
 # Known sources and gamma energies (keV)
 sources = {
@@ -113,42 +114,41 @@ for source, gammas in sources.items():
 #%%
 
 
-def photo_e_efficiency(E, alpha, Norm):
-    return Norm * (E ** (-alpha))
+# Prepare data: convert channels to energy using the fitted calibration function
+channels_det2 = np.array(channels[2])
+maximum_det2 = np.array(maximum[2])
 
-# Prepare data for Detector 2
-E_data = np.array(energies[2])
-eff_data = np.array(maximum[2])
+# Convert to energy using the fitted ROOT TF1
+calib_func = calibration_old[2]
+energies_det2 = np.array([calib_func.Eval(ch) for ch in channels_det2])
 
-# Initial guess: alpha = 3, Norm arbitrary
-initial_guess = [3.0, 140031823.0]
+# Log-transform
+log_E = np.log(energies_det2)
+log_eff = np.log(maximum_det2)
 
-# Fit the data
-popt, pcov = curve_fit(photo_e_efficiency, E_data, eff_data, p0=initial_guess)
+# Linear fit in log-log space
+slope, intercept, r_value, p_value, std_err = linregress(log_E, log_eff)
 
-alpha_fit, norm_fit = popt
-alpha_err = np.sqrt(np.diag(pcov))[0]
+alpha_fit = -slope
+norm_fit = np.exp(intercept)
 
-print(f"\n📈 Fitted alpha for Detector 2: {alpha_fit:.3f} ± {alpha_err:.3f}")
-print(f"Normalization factor: {norm_fit:.3e}")
+print(f"\n📈 Log-log Fit Results for Detector 2:")
+print(f"  Fitted alpha: {alpha_fit:.3f} ± {std_err:.3f}")
+print(f"  Normalization (Norm): {norm_fit:.3e}")
+print(f"  R² of fit: {r_value**2:.4f}")
 
-# Plot the data and fit
-E_fit = np.linspace(min(E_data)*0.9, max(E_data)*1.1, 200)
-eff_fit = photo_e_efficiency(E_fit, *popt)
-
-
-plt.figure(figsize=(8,6))
-plt.scatter(E_data, eff_data, color='blue', label="Data (Detector 2)", zorder=3)
-plt.plot(E_fit, eff_fit, color='red', label=f"Fit: $\\eta(E) = {norm_fit:.1e} \\cdot E^{{-{alpha_fit:.2f}}}$")
-plt.xlabel("Photon Energy (keV)")
-plt.ylabel("Efficiency (arb. units)")
-plt.title("Photoelectric Efficiency Fit - Detector 2")
+# Plot the result
+plt.figure(figsize=(8, 6))
+plt.scatter(log_E, log_eff, color='blue', label='Data (log-log)', zorder=3)
+plt.plot(log_E, slope * log_E + intercept, color='red', label=f'Fit: log(η) = {intercept:.2f} - {alpha_fit:.2f}·log(E)')
+plt.xlabel("log(Energy [keV])")
+plt.ylabel("log(Relative Efficiency)")
+plt.title("Photoelectric Efficiency (log-log fit) - Detector 2")
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
-plt.savefig("efficiency_fit_detector2.png")
+plt.savefig("photoeff_loglog_fit_detector2.png")
 plt.show()
-
 
 
 
