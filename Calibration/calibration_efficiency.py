@@ -120,7 +120,7 @@ maximum_det2 = np.array(maximum[2])
 
 # Convert to energy using the fitted ROOT TF1
 calib_func = calibration_old[2]
-energies_det2 = np.array([calib_func.Eval(ch) for ch in channels_det2])
+energies_det2 = np.array(energies[2])
 
 # Log-transform
 log_E = np.log(energies_det2)
