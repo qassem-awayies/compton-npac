@@ -201,7 +201,7 @@ def fit_with_scipy_minimizer(init_params, bin_values):
 # ------------------------
 with open(dat_file_path,"w") as fdat, open(fit_param_file_path,"w") as ffit:
     fdat.write("# angle mu_x mu_y sigma_x sigma_y E_sum deviation  integrated\n")
-    ffit.write("# angle A mu_x sigma_x alpha_x n_x mu_y sigma_y alpha_y n_y B C D chi2 reduced_chi2 integrated\n")
+    ffit.write("# angle mu_x sigma_x mu_y sigma_y chi2 reduced_chi2 integrated\n")
 
     for angle_index,angle in enumerate(angles):
         file_path = file_template.format(angle=angle)

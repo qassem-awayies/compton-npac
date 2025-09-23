@@ -13,14 +13,14 @@ def dE_dtheta(k, theta_deg):
 
 # --- Load data ---
 angles, E1, sigma_E1, E2, sigma_E2 = [], [], [], [], []
-with open("output/moments_parameters.dat") as f:
+with open("output/fit_parameters.dat") as f:
     for line in f:
         if line.startswith("#"): continue
         cols = line.split()
         if len(cols) < 7: continue
         angle = float(cols[0])
         x0, sigma_x = float(cols[2]), float(cols[3])
-        y0, sigma_y = float(cols[4]), float(cols[5])
+        y0, sigma_y = float(cols[6]), float(cols[7])
         angles.append(angle)
         E1.append(x0); sigma_E1.append(sigma_x)
         E2.append(y0); sigma_E2.append(sigma_y)

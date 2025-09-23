@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/Users/qassem.awayies/Projects/compton-npac/pyfasterac/build/CMakeFiles/fasterac_lib"
+		},
+		{
+			"file" : "/Users/qassem.awayies/Projects/compton-npac/pyfasterac/build/CMakeFiles/fasterac_lib.rule"
+		},
+		{
+			"file" : "/Users/qassem.awayies/Projects/compton-npac/pyfasterac/build/CMakeFiles/fasterac_lib-complete.rule"
+		},
+		{
+			"file" : "/Users/qassem.awayies/Projects/compton-npac/pyfasterac/build/fasterac_lib-prefix/src/fasterac_lib-stamp/fasterac_lib-build.rule"
+		},
+		{
+			"file" : "/Users/qassem.awayies/Projects/compton-npac/pyfasterac/build/fasterac_lib-prefix/src/fasterac_lib-stamp/fasterac_lib-configure.rule"
+		},
+		{
+			"file" : "/Users/qassem.awayies/Projects/compton-npac/pyfasterac/build/fasterac_lib-prefix/src/fasterac_lib-stamp/fasterac_lib-download.rule"
+		},
+		{
+			"file" : "/Users/qassem.awayies/Projects/compton-npac/pyfasterac/build/fasterac_lib-prefix/src/fasterac_lib-stamp/fasterac_lib-install.rule"
+		},
+		{
+			"file" : "/Users/qassem.awayies/Projects/compton-npac/pyfasterac/build/fasterac_lib-prefix/src/fasterac_lib-stamp/fasterac_lib-mkdir.rule"
+		},
+		{
+			"file" : "/Users/qassem.awayies/Projects/compton-npac/pyfasterac/build/fasterac_lib-prefix/src/fasterac_lib-stamp/fasterac_lib-patch.rule"
+		},
+		{
+			"file" : "/Users/qassem.awayies/Projects/compton-npac/pyfasterac/build/fasterac_lib-prefix/src/fasterac_lib-stamp/fasterac_lib-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"fasterac_lib"
+		],
+		"name" : "fasterac_lib"
+	}
+}

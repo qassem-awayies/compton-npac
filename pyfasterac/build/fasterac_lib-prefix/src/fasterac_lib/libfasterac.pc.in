@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+Name: libfasterac
+Description: Minimal Faster data analysis library in C
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -lfasterac
+Cflags: -I${includedir}
+Requires.private:zlib

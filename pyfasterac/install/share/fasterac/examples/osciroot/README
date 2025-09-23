@@ -1,0 +1,127 @@
+
+
+  ---------------------------------------------------------------
+
+
+                       O S C I R O O T
+
+
+        Statistics on Faster Oscillos with fasterac & root
+
+
+         Jean Hommet - LPC Caen - hommet@lpccaen.in2p3.fr
+
+  ---------------------------------------------------------------
+
+
+
+
+  Requirements
+  ------------
+    Root & fasterac are installed.
+
+
+
+
+  Content
+  -------
+
+    rootlogon.C
+      Is run whenever you start root, initializes everything :
+        - define fasterac include path and load libfasterac,
+        - compile and load the following macros.
+
+
+    load_fasterac.C
+      Is a root macro used to declare fasterac includes and load libfasterac
+      inside ROOT.
+      See rootlogon.C :
+            >
+            >  gROOT->ProcessLine (".x load_fasterac.C");
+            >
+
+
+    Oscillo.C
+      Is a storage class (branch tree) with commonly used features.
+
+
+    oscillo_faster2tree.C
+      Is a faster to root converter used to create a root tree containing an
+      Oscillo branch.
+
+
+    load_oscillo_tree.C
+      Load a tree before using.
+
+
+    oscillo_test.C
+      Examples of how to display histograms directly from an Oscillo tree
+      using the TTree methods SetAlias() and Draw().
+      Very useful but slow with big files.
+      refs: http://root.cern.ch/root/html/TTree.html#TTree:Draw@1
+            http://root.cern.ch/root/html/TTree.html#TTree:SetAlias
+
+
+    TH_Osc_Explorer.C
+      This Root Class is used to see oscillos selected from statistics.
+      It displays at the same time :
+        - an histogram (1 or 2D) showing statistics from oscillos.
+        - the oscillograms involved in the selected bin of the histogram.
+      Construct an 'explorer' by passing one Oscillo_Tree, one Oscillo and a
+      function which performs the calculations of the statistics.
+      See constructors in TH_Osc_Explorer.h and examples given :
+        - baseline_explorer.C
+        - satur_explorer.C
+        - discri_explorer.C
+
+
+    Discrillo.C
+      This Root Class shows how to inherit Oscillo for specific purpose and
+      to create an TH_Osc_Explorer using it (see also discri_explorer2.C).
+
+
+    baseline_explorer.C & satur_explorer.C
+      Examples to show how to use TH_Osc_Explorer for one dimension statistics.
+
+
+    discri_explorer.C
+      Example to show how to use TH_Osc_Explorer for two dimensions statistics.
+
+
+    discrip_explorer2.C
+      Example to show how to specialize Oscillo.C (see Discrillo.C) and
+      how to use TH_Osc_Explorer with a child class of Oscillo.
+
+
+    oscillo14_20k.fast
+      Example data file to begin with OSCIROOT and try each macro
+
+
+    clean.sh
+      Script used to clean the directory (delete generated libraries)
+
+
+
+  Beginning
+  ---------
+    Type 'root' in the console (in this directory).
+    Look at rootlogon.C, there is three parts at the end of the file:
+      - create a tree
+      - load a tree
+      - work with it
+    The first time you will launch 'root', those 3 parts will be executed,
+    creating the first oscillo_tree file, loading it and executing one of the
+    examples of work.
+    Once your oscillo_tree is created, comment the first part and try the other
+    work examples (comment/uncomment the examples and retype 'root').
+
+
+
+  Continuing
+  ----------
+    Copy the example files and modify your own macros to your needs ...
+
+
+
+
+

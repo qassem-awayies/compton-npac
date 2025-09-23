@@ -1,0 +1,13 @@
+#! /bin/csh -f
+
+set FASTERAC_PREFIX=/Users/qassem.awayies/Projects/compton-npac/pyfasterac/install
+
+setenv PATH "${PATH}:${FASTERAC_PREFIX}/bin"
+setenv LD_LIBRARY_PATH "${LD_LIBRARY_PATH}:${FASTERAC_PREFIX}/lib"
+if($?PKG_CONFIG_PATH) then
+  setenv PKG_CONFIG_PATH "${PKG_CONFIG_PATH}:${FASTERAC_PREFIX}/lib/pkgconfig"
+else
+  setenv PKG_CONFIG_PATH "${FASTERAC_PREFIX}/lib/pkgconfig"
+endif
+setenv MANPATH "${MANPATH}:${FASTERAC_PREFIX}/share/man"
+

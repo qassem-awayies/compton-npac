@@ -1,0 +1,153 @@
+
+/*
+ *  As group2tree.C this program handles QDCs from the data file
+ *  "@prefix@/share/fasterac/data/smallgrp.fast".
+ *  In this example individual data 2 and 4 in coincidence are regrouped and
+ *  saved in the root file (time gap < COINC_NANO ns => coincidence).
+ *
+ *  Rq : groups (1&3) are discarted
+ *
+ */
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+
+#include "TFile.h"
+#include "TTree.h"
+
+#include "fasterac/fasterac.h"
+#include "fasterac/fast_data.h"
+#include "fasterac/qdc_caras.h"
+#include "fasterac/group.h"
+
+using namespace std;
+
+
+#define DATAFILENAME "@prefix@/share/fasterac/data/smallgrp.fast"
+#define ROOTFILENAME "regroup2tree_data.root"
+#define LABEL2       2
+#define LABEL4       4
+#define COINC_NANO  10
+
+
+int main (int argc, char** argv) {
+
+  /************/
+  /*  FASTER  */
+  /************/
+  //  reader
+  faster_file_reader_p reader;
+  //  data
+  faster_data_p        data;
+  unsigned char        alias;
+  unsigned short       label_a;
+  unsigned long long   clock_a;
+  unsigned short       label_b;
+  unsigned long long   clock_b;
+  //  search
+  bool                 first_found;
+  bool                 second_found;
+  //  qdc faster
+  qdc_t_x1             q_a;
+  qdc_t_x1             q_b;
+  //  coincidence time window in nanosec
+  unsigned long long   delta_t = COINC_NANO;
+  /**********/
+  /*  ROOT  */
+  /**********/
+  //  channels 2 & 4 (first charge only)
+  Int_t                leaf_q2;
+  Int_t                leaf_q4;
+  //  root tree
+  TTree*               tree;
+  char                 tree_title [256];
+  //  root file
+  TString              fName = ROOTFILENAME;
+  TFile*               root_file;
+
+
+  //  print infos
+  printf ("\n");
+  printf ("  regroup2tree :\n");
+  printf ("     - read faster file '%s'\n", DATAFILENAME);
+  printf ("     - regroup QDC labels %d and %d in coincidence (which time gap < %d ns)\n", LABEL2, LABEL4, COINC_NANO);
+  printf ("     - output grouped 2 and 4 to root file '%s'\n", ROOTFILENAME);
+  printf ("\n");
+
+  //  input data file
+  reader = faster_file_reader_open (DATAFILENAME);
+  if (reader == NULL) {
+    printf ("error opening file %s\n", DATAFILENAME);
+    return EXIT_FAILURE;
+  }
+
+  // output root file
+  root_file = new TFile (fName.Data (), "recreate");
+  sprintf (tree_title, "Two QDC channels in coincidence (labels %d & %d : dt < %d ns)", LABEL2, LABEL4, COINC_NANO);
+  tree = new TTree ("DataTree", tree_title);
+  tree->Branch ("Ch2_Q1", &leaf_q2, "Ch2_Q1/I");
+  tree->Branch ("Ch4_Q1", &leaf_q4, "Ch4_Q1/I");
+
+  // main loop
+  first_found  = true;
+  second_found = true;
+  while (first_found && second_found) {
+    first_found  = false;
+    second_found = false;
+    //  loop for the first qdc LABEL2 or LABEL4  ->   q_a; label_a; clock_a
+    while (!first_found && ((data = faster_file_reader_next (reader)) != NULL)) {
+      alias   = faster_data_type_alias (data);
+      label_a = faster_data_label      (data);
+      clock_a = faster_data_clock_ns   (data);
+      //  found qdc channel 1 or 2
+      if ((alias == QDC_TDC_X1_TYPE_ALIAS) && ((label_a == LABEL2) || (label_a == LABEL4))) {
+        faster_data_load (data, &q_a);
+        first_found = true;
+      }
+    }
+    //  loop for the second qdc (the other label)  ->   q_b; label_b; clock_b
+    while (!second_found && ((data = faster_file_reader_next (reader)) != NULL)) {
+      alias   = faster_data_type_alias (data);
+      label_b = faster_data_label      (data);
+      clock_b = faster_data_clock_ns   (data);
+      //  found qdc channel 1 or 2
+      if ((alias == QDC_TDC_X1_TYPE_ALIAS) && ((label_b == LABEL2) || (label_b == LABEL4))) {
+        faster_data_load (data, &q_b);
+        second_found = 1;
+      }
+      //  same channel or to late !
+      if ((clock_b - clock_a > delta_t) || (second_found && (label_b == label_a))) {
+        if (second_found) {       //  the same channel : second becomes first
+          clock_a      = clock_b;
+          label_a      = label_b;
+          q_a          = q_b;
+          second_found = 0;
+        }
+      //  not the same and not to late
+      } else {
+        //  it's a coinc!  fill tree
+        if (second_found) {
+          if (label_a == LABEL2) {
+            leaf_q2 = q_a.q1;
+            leaf_q4 = q_b.q1;
+          } else {
+            leaf_q2 = q_b.q1;
+            leaf_q4 = q_a.q1;
+          }
+          tree->Fill ();
+        }
+      }
+    }
+  }
+
+  //  close files & quit
+  faster_file_reader_close (reader);
+  root_file->Write ();
+  root_file->Close ();
+  return EXIT_SUCCESS;
+
+}
+
+

@@ -1,0 +1,167 @@
+
+/*
+ *  As group2tree.C this program handles grouped QDCs from the data file
+ *  '@prefix@/share/fasterac/data/smallgrp.fast'. In the previous example, groups where
+ *  necessarily a couple of channels 1 and 3. In this example, a group can be any
+ *  combination of four channels (1, 2, 3, 4). Moreover, this program handles and
+ *  considers data outside groups as invividual data. So, in the produced root file,
+ *  the four channels are written on each line, the special value NO_DATA indicates the
+ *  absence QDC for a channel.
+ *
+ *  Rq : when histogramming, don't forget to cut the value NO_DATA.
+ *
+ */
+
+//  std includes
+#include <stdio.h>
+#include <stdlib.h>
+#include <iostream>
+
+//  root includes
+#include "TFile.h"
+#include "TTree.h"
+
+//  fasterac includes
+#include "fasterac/fasterac.h"
+#include "fasterac/fast_data.h"
+#include "fasterac/qdc_caras.h"
+#include "fasterac/group.h"
+
+using namespace std;
+
+
+#define DATAFILENAME "@prefix@/share/fasterac/data/smallgrp.fast"
+#define ROOTFILENAME "group2tree_bis_data.root"
+#define LABEL1   1
+#define LABEL2   2
+#define LABEL3   3
+#define LABEL4   4
+#define NO_DATA -1000000000
+
+
+
+
+int main (int argc, char** argv) {
+
+  /************/
+  /*  FASTER  */
+  /************/
+  //  file reader
+  faster_file_reader_p   reader;
+  //  data
+  faster_data_p          data;
+  unsigned char          alias;
+  unsigned short         label;
+  //  group data
+  faster_buffer_reader_p group_reader;
+  void*                  group_buffer;
+  unsigned short         lsize;
+  faster_data_p          group_data;
+  //  qdc tdc data
+  qdc_t_x1               qdc;
+  /**********/
+  /*  ROOT  */
+  /**********/
+  //  a root leaf for each qdc channel
+  Int_t                  leaf_q1;
+  Int_t                  leaf_q2;
+  Int_t                  leaf_q3;
+  Int_t                  leaf_q4;
+  //  root tree
+  TTree*                 tree;
+  char                   tree_title [256];
+  //  root file
+  TString                fName = ROOTFILENAME;
+  TFile*                 root_file;
+
+
+  //  print infos
+  printf ("\n");
+  printf ("  group2tree_bis :\n");
+  printf ("     - read faster file '%s'\n", DATAFILENAME);
+  printf ("     - get QDC data labels 1, 2, 3 and 4 (grouped or not)\n");
+  printf ("     - output data to root file '%s'\n", ROOTFILENAME);
+  printf ("         -> format is four columns, special value '%d' means no data\n", NO_DATA);
+  printf ("         -> dont forget to cut this value when histogramming\n");
+  printf ("\n");
+
+  //  open faster file reader
+  reader = faster_file_reader_open (DATAFILENAME);
+  if (reader == NULL) {
+    printf ("error opening file %s\n", DATAFILENAME);
+    return EXIT_FAILURE;
+  }
+
+  //  output root file
+  root_file = new TFile (fName.Data (), "recreate");
+  sprintf (tree_title, "faster to tree root test");
+  tree = new TTree ("DataTree", tree_title);
+  tree->Branch ("Ch1_Q1", &leaf_q1, "Ch1_Q1/I");
+  tree->Branch ("Ch2_Q1", &leaf_q2, "Ch2_Q1/I");
+  tree->Branch ("Ch3_Q1", &leaf_q3, "Ch3_Q1/I");
+  tree->Branch ("Ch4_Q1", &leaf_q4, "Ch4_Q1/I");
+
+  // main loop : for each data of the file
+  while ((data = faster_file_reader_next (reader)) != NULL)
+  {
+    //  reset leaves
+    leaf_q1 = NO_DATA;
+    leaf_q2 = NO_DATA;
+    leaf_q3 = NO_DATA;
+    leaf_q4 = NO_DATA;
+    //  get type and label of the data
+    alias = faster_data_type_alias (data);
+    label = faster_data_label      (data);
+    //  test its type
+    if (alias == GROUP_TYPE_ALIAS)
+    { //  it's a group of data (ie : coincidence)
+      //  get the specific GROUP part of the data
+      lsize        = faster_data_load_size (data);
+      group_buffer = faster_data_load_p    (data);
+      //  open a reader for that group
+      group_reader = faster_buffer_reader_open (group_buffer, lsize);
+      //  loop on each data of the group
+      while ((group_data = faster_buffer_reader_next (group_reader)) != NULL)
+      {
+        //  get type & label of the grouped data
+        alias = faster_data_type_alias (group_data);
+        label = faster_data_label      (group_data);
+        //  test its type
+        if (alias == QDC_TDC_X1_TYPE_ALIAS)
+        { //  it's a QDC
+          //  get the QDC specific part of the data
+          faster_data_load (group_data, &qdc);
+          //  test its label to assign its charge to the corresponding leaf
+               if (label == LABEL1) leaf_q1 = qdc.q1;
+          else if (label == LABEL2) leaf_q2 = qdc.q1;
+          else if (label == LABEL3) leaf_q3 = qdc.q1;
+          else if (label == LABEL4) leaf_q4 = qdc.q1;
+        }
+      }
+      //  close the group reader
+      faster_buffer_reader_close (group_reader);
+    }
+    else if (alias == QDC_TDC_X1_TYPE_ALIAS)
+    { //  it's a QDC
+      //  get the QDC specific part of the data
+      faster_data_load (data, &qdc);
+      //  test its label and assign its charge to the corresponding leaf
+           if (label == LABEL1) leaf_q1 = qdc.q1;
+      else if (label == LABEL2) leaf_q2 = qdc.q1;
+      else if (label == LABEL3) leaf_q3 = qdc.q1;
+      else if (label == LABEL4) leaf_q4 = qdc.q1;
+    }
+    //  fill a line of the root file for each data of the main loop :
+    //  => when group data, the line may contain several qdc data   (in the same event)
+    //  => when others, each individual data defines a single event (only one data isn't NO_DATA)
+    tree->Fill ();
+  }
+  //  write and close the root file
+  root_file->Write ();
+  root_file->Close ();
+  //  close the faster file and quit
+  faster_file_reader_close (reader);
+  return EXIT_SUCCESS;
+}
+
+

@@ -1,0 +1,71 @@
+Fasterac README
+---------------
+
+
+DESCRIPTION
+
+  Fasterac is a C library used to handle FASTER data files.
+  faster_file_display is a program to display FASTER files on console.
+  See 'fasterac' and 'faster_file_display' manual pages for details.
+
+
+
+DIRECTORIES
+
+  man      - manual pages
+  include  - library headers - data formats and routines declarations
+  lib      - library sources
+  src      - faster_file_display source - display Faster data file
+  examples - programs and makefiles examples
+             * data_reader: data file reading and basic treatments
+             * faster_to_root: data conversion to 'root tree'
+
+
+
+INSTALLATION
+
+  Installation use the standard process "./configure; make; make install".
+
+  WITH ADMINISTRATOR PRIVILEGES,
+  you can install the package under /usr/local for all users :
+      > tar xvzf fasterac-1.0.tar.gz
+      > cd fasterac-1.0
+      > ./configure
+      > make
+      > make install
+
+  WITHOUT ADMINISTRATOR PRIVILEGES,
+  you can install the package in your home (ie /home/username/fasterac), by
+  passing the prefix to configure:
+      > tar xvzf fasterac-1.0.tar.gz
+      > cd fasterac-1.0
+      > ./configure  --prefix=/home/username/fasterac
+      > make
+      > make install
+  For that kind of local installation, you must configure certain paths by
+  invoking the script "fasterac_config.sh". The simplest way is add the
+  following line to your ".bashrc" (with the correct path)
+  for Bash and .bashrc :
+      source YOUR/PREFIX/bin/fasterac_config.sh
+  for C shell and .cshrc :
+      source YOUR/PREFIX/bin/fasterac_config.csh
+
+
+EXAMPLES
+
+  The examples given in 'install_prefix'/share/fasterac/examples show how to
+  write and compile programs that use the library. Compile them after having
+  installed 'fasterac'. If 'pkg-config' isn't installed on your system, the
+  example makefiles should be modified to setup FASTERAC_CFLAGS and
+  FASTERAC_LIBS (see details in the Makefiles).
+  Warning : the ROOT conversion example 'faster_to_root' need 'g++' and
+  'root' installed.
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,26 @@
+
+
+#
+# If pkg-config isn't installed on your system, comment the following lines and
+# set the fasterac flags as indicated with your own paths:
+#
+# FASTERAC_CFLAGS = -I/Users/qassem.awayies/Projects/compton-npac/pyfasterac/install/include
+# FASTERAC_LIBS   = -L/Users/qassem.awayies/Projects/compton-npac/pyfasterac/install/lib -lfasterac
+#
+FASTERAC_CFLAGS = $(shell pkg-config --cflags libfasterac)
+FASTERAC_LIBS   = $(shell pkg-config --libs   libfasterac)
+#
+
+
+CC     = gcc
+CFLAGS = ${FASTERAC_CFLAGS} -Wall
+LIBS   = ${FASTERAC_LIBS} -lm
+
+all : @reader@
+
+@reader@: @reader@.c
+	${CC} $@.c -o $@ ${INCFLAGS} ${CFLAGS} ${LIBS}
+
+clean :
+	rm -f *.o
+	rm -f @reader@

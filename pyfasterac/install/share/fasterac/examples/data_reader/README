@@ -1,0 +1,26 @@
+
+----------------------------------
+ README : Fasterac reader example
+----------------------------------
+
+
+This example shows how to write and compile programs using Fasterac library.
+
+
+Installation :
+--------------
+Both libfasterac and pkg-config have to be installed before compiling this
+example. This can be checked by the command 'pkg-config --list-all', then
+libfasterac should appear in the returned list. Without the pkg-config tool
+installed, the Makefile has to be modified as indicated in it.
+
+To compile and test this example : make && make test
+
+
+reader_example.c :
+------------------
+This program is divided in two functions : main and data_display.
+The main function shows how to read a data file sequentially, and data_display
+how to handle every predefined data type.
+
+

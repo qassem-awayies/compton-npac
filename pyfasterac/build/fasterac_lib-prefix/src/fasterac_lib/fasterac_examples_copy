@@ -1,0 +1,10 @@
+#!/bin/bash
+
+
+if [ -e fasterac_examples ]; then
+  echo "error: fasterac_examples already exists"
+fi
+
+cp -r /Users/qassem.awayies/Projects/compton-npac/pyfasterac/install/share/fasterac/examples ./fasterac_examples
+
+
