@@ -108,35 +108,6 @@ for source, gammas in sources.items():
         hist_det[det].SetDirectory(out_file)
         hist_det[det].Write()
 
-# Fit linear calibration per detector using ROOT and plot
-calibration_tf1 = {}
-for det in [1, 2]:
-    n_points = len(channels[det])
-    graph = ROOT.TGraph(n_points, np.array(channels[det], dtype=np.float64), np.array(energies[det], dtype=np.float64))
-    graph.SetName(f"graph_cal_det{det}")
-    graph.SetTitle(f"Detector {det} calibration;Channel q;Energy keV")
-    graph.SetMarkerStyle(20)
-    graph.SetMarkerColor(ROOT.kBlue)
-    graph.SetLineColor(ROOT.kRed)
-    graph.SetLineWidth(2)
-    graph.SetMarkerSize(1.2)
-    graph.Write()
-
-    # Linear function
-    f_lin = ROOT.TF1(f"calibration_det{det}", "[0]*x + [1]", 0, max_q)
-    f_lin.SetParameter(0, 0.0018)
-    f_lin.SetParameter(1, -30)
-    graph.Fit(f_lin, "Q")  # Quiet fit
-    calibration_tf1[det] = f_lin
-    f_lin.Write()
-    print(f"\nDetector {det} calibration: E(q) = {f_lin.GetParameter(0):.6f} * q + {f_lin.GetParameter(1):.3f} keV")
-
-    # Create canvas and plot
-    c = ROOT.TCanvas(f"c_cal_det{det}", f"Calibration Detector {det}", 800, 600)
-    graph.Draw("AP")
-    f_lin.Draw("same")
-    c.SetGrid()
-    c.SaveAs(f"calibration_detector_{det}.png")
 
 
 #%%
@@ -150,7 +121,7 @@ E_data = np.array(energies[2])
 eff_data = np.array(maximum[2])
 
 # Initial guess: alpha = 3, Norm arbitrary
-initial_guess = [3.0, 1.0]
+initial_guess = [3.0, 140031823.0]
 
 # Fit the data
 popt, pcov = curve_fit(photo_e_efficiency, E_data, eff_data, p0=initial_guess)
