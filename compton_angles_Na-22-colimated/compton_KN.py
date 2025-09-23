@@ -52,6 +52,8 @@ def build_histogram(file_path, nbins=200, e_max=2000):
                 E2_list.append(E)
         for E1 in E1_list:
             for E2 in E2_list:
+                if ((E1 + E2) > 800.) or ( (E1+E2) < 300.):
+                    continue
                 h2.Fill(E1, E2)
     return h2
 
@@ -102,20 +104,14 @@ def cb2d_integration_ready(xy, par):
 
     return A * cbx * cby
 
-
-
 def integrate_cb2d_2sigma_root(cb_func, params):
-    """
-    Numerically integrate cb2d_integration_ready over the 2σ elliptical region
-    using scipy.dblquad. cb_func must be a callable that uses ROOT.Math.crystalball_pdf.
-    """
     A = params[0]
     mu_x, sigma_x = params[1], params[2]
     mu_y, sigma_y = params[5], params[6]
 
     # Integration bounds: ±2σ around mean
-    x_min, x_max = max(mu_x - 2 * sigma_x, 0) ,min(mu_x + 2 * sigma_x, np.inf)
-    y_min, y_max = max(mu_y - 2 * sigma_y, 0), min(mu_y + 2 * sigma_y, np.inf)
+    x_min, x_max = max(mu_x - 2 * sigma_x, 0), mu_x + 2 * sigma_x
+    y_min, y_max = max(mu_y - 2 * sigma_y, 0), mu_y + 2 * sigma_y
 
     # Define integrand: y first, then x (dblquad convention)
     def integrand(y, x):
@@ -137,6 +133,48 @@ def integrate_cb2d_2sigma_root(cb_func, params):
 
     return result
 
+def cb2d_root_func(xy, par):
+    xx = xy[0]
+    yy = xy[1]
+
+    A = par[0]
+    mu_x, sigma_x, alpha_x, n_x = par[1], par[2], par[3], par[4]
+    mu_y, sigma_y, alpha_y, n_y = par[5], par[6], par[7], par[8]
+
+    dx = (xx - mu_x) / sigma_x
+    dy = (yy - mu_y) / sigma_y
+
+    # Check if inside 2σ ellipse
+    if dx**2 + dy**2 > 4.0:
+        return 0.0
+
+    cbx = ROOT.Math.crystalball_pdf(xx, alpha_x, n_x, sigma_x, mu_x)
+    cby = ROOT.Math.crystalball_pdf(yy, alpha_y, n_y, sigma_y, mu_y)
+
+    return A * cbx * cby
+
+def integrate_cb2d_root(par):
+    mu_x, sigma_x = par[1], par[2]
+    mu_y, sigma_y = par[5], par[6]
+
+    # Integration limits: bounding box of 2σ ellipse
+    x_min = mu_x - 2 * sigma_x
+    x_max = mu_x + 2 * sigma_x
+    y_min = mu_y - 2 * sigma_y
+    y_max = mu_y + 2 * sigma_y
+
+    # Wrap the Python function for TF2
+    f_cb2d = ROOT.TF2("f_cb2d", cb2d_root_func, x_min, x_max, y_min, y_max, len(par))
+
+    # Set parameters
+    for i, p in enumerate(par):
+        f_cb2d.SetParameter(i, p)
+
+    # Numerical integration using ROOT's internal algorithm
+    integral = f_cb2d.Integral(x_min, x_max, y_min, y_max, 1e-4)
+
+    return integral
+
 def chi2_to_minimize(pars, bin_values):
     chi2 = 0.0
     for x, y, h in bin_values:
@@ -144,6 +182,19 @@ def chi2_to_minimize(pars, bin_values):
         if h > 0:
             chi2 += (h - f)**2 / h
     return chi2
+
+def fit_with_scipy_minimizer(init_params, bin_values):
+    """
+    Uses scipy's minimize to fit parameters by minimizing χ².
+    """
+    # Minimize χ²
+    result = minimize(chi2_to_minimize, init_params, args=(bin_values,), method='L-BFGS-B')
+    fitted_params = result.x
+    chi2_val = chi2_to_minimize(fitted_params, bin_values)
+    ndf = len(bin_values) - len(fitted_params)
+    reduced_chi2 = chi2_val / ndf if ndf > 0 else float('nan')
+    
+    return fitted_params, reduced_chi2, chi2_val, ndf
 
 # ------------------------
 # Main loop
@@ -190,31 +241,18 @@ with open(dat_file_path,"w") as fdat, open(fit_param_file_path,"w") as ffit:
                        mu_y, sigma_y, 1.5, 3.0,
                        0.0, 0.0, 0.0]
 
-        # Minimize χ²
-        result = minimize(chi2_to_minimize, init_params, args=(bin_values,), method='L-BFGS-B')
-        fitted_params = result.x
-        chi2_val = chi2_to_minimize(fitted_params, bin_values)
-        ndf = len(bin_values) - len(fitted_params)
-        reduced_chi2 = chi2_val / ndf if ndf > 0 else float('nan')
-
+        fitted_params, reduced_chi2, chi2_val, ndf = fit_with_scipy_minimizer(init_params, bin_values)
+        
         # Save parameters
-        E_sum = mu_x + mu_y
+        E_sum = fitted_params[1] + fitted_params[5]  # Use fitted mu_x and mu_y
         deviation = E_sum - 511
         
-        
-        # Extract Gaussian means and sigmas from fitted parameters
-        mu_x, sigma_x = fitted_params[1], fitted_params[2]
-        mu_y, sigma_y = fitted_params[5], fitted_params[6]
-        
-        # Integrate bin contents in the 2σ Gaussian region
-        
+        # Integrate using the fitted parameters
         integrated_cb = integrate_cb2d_2sigma_root(cb2d_integration_ready, fitted_params) / run_time[angle_index]
         
-        fdat.write(f"{angle} {mu_x:.2f} {mu_y:.2f} {sigma_x:.2f} {sigma_y:.2f} {E_sum:.2f} {deviation:.2f} {integrated_cb:.6f}\n")
+        fdat.write(f"{angle} {fitted_params[1]:.2f} {fitted_params[5]:.2f} {fitted_params[2]:.2f} {fitted_params[6]:.2f} {E_sum:.2f} {deviation:.2f} {integrated_cb:.6f}\n")
         ffit.write(f"{angle} " + " ".join(f"{p:.4f}" for p in fitted_params) +
                    f" {chi2_val:.2f} {reduced_chi2:.2f} {integrated_cb:.6f}\n")
-
-
 
         print(f"Angle {angle}° done. E1+E2={E_sum:.2f} keV, deviation={deviation:.2f} keV, "
               f"chi2={chi2_val:.2f}, reduced chi2={reduced_chi2:.2f}")
@@ -236,9 +274,8 @@ with open(dat_file_path,"w") as fdat, open(fit_param_file_path,"w") as ffit:
 
         c = ROOT.TCanvas(f"c_{angle}", "", 800, 600)
         h2.Draw("COLZ")
-        g2.SetLineColor(ROOT.kRed)
-        g2.SetLineWidth(2)
-        g2.Draw("SAME SURF1")
+        #g2.SetLineColor(ROOT.kRed)
+        #g2.SetLineWidth(2)
+        #g2.Draw("SAME SURF1")
         c.SaveAs(os.path.join(out_dir, f"coinc_{angle}.png"))
         out_root.Close()
-
