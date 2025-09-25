@@ -1,0 +1,1 @@
+/Users/qassem.awayies/Projects/compton-npac/pyfasterac/install/lib/pyfasterac.cpython-313-darwin.so

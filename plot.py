@@ -13,7 +13,7 @@ def dE_dtheta(k, theta_deg):
 
 # --- Load data ---
 angles, E1, sigma_E1, E2, sigma_E2 = [], [], [], [], []
-with open("output/moments_parameters.dat") as f:
+with open("output/fit_parameters.dat") as f:
     for line in f:
         if line.startswith("#"): continue
         cols = line.split()

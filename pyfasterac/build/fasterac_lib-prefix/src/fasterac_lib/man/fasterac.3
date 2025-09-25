@@ -1,0 +1,119 @@
+.\" Copyright 2011 Jean Hommet (hommet@lpccaen.in2p3.fr)
+.\"
+.\"
+.TH fasterac 3 2014-05-27 "" "Faster DAQ System"
+.SH NAME
+faster_data_type_alias, faster_data_label, faster_data_clock_sec, faster_data_load_size,
+faster_data_load, faster_data_new, faster_buffer_reader_open, faster_buffer_reader_close,
+faster_buffer_reader_next, faster_buffer_reader_current_position, faster_file_reader_open,
+faster_file_reader_close, faster_file_reader_next
+.sp
+\- handle Faster data from buffer or file
+.SH SYNOPSIS
+.nf
+.B #include <fasterac/fasterac.h>
+.sp
+.BI "unsigned char          faster_data_type_alias                (const faster_data_p " data );
+.sp
+.BI "unsigned short         faster_data_label                     (const faster_data_p " data );
+.sp
+.BI "unsigned long long     faster_data_clock_ns                  (const faster_data_p " data );
+.sp
+.BI "long double            faster_data_clock_sec                 (const faster_data_p " data );
+.sp
+.BI "unsigned short         faster_data_load_size                 (const faster_data_p " data );
+.sp
+.BI "unsigned short         faster_data_load                      (const faster_data_p " data ", void* " mem2cpy );
+.sp
+.BI "faster_data_p          faster_data_new                       (const faster_data_p " to_clone );
+.sp
+.BI "faster_buffer_reader_p faster_buffer_reader_open             (const void* " buf ", const size_t " size );
+.sp
+.BI "void                   faster_buffer_reader_close            (faster_buffer_reader_p " reader );
+.sp
+.BI "faster_data_p          faster_buffer_reader_next             (faster_buffer_reader_p " reader );
+.sp
+.BI "void*                  faster_buffer_reader_current_position (const faster_buffer_reader_p " reader );
+.sp
+.BI "faster_file_reader_p   faster_file_reader_open               (const char* " filename );
+.sp
+.BI "void                   faster_file_reader_close              (faster_file_reader_p " reader );
+.sp
+.BI "faster_data_p          faster_file_reader_next               (faster_file_reader_p " reader );
+.fi
+.sp
+.SH OVERVIEW
+The \fBfasterac\fP library is a minimal analysis library in C to read and treat data from
+Faster DAQ System.
+.SH DESCRIPTION
+The \fBfaster_data_...()\fP functions all take a parameter of data type \fIfaster_data_p\fP
+which represents a Faster data.
+.PP
+The \fBfaster_buffer_...()\fP functions all take a parameter representing a buffer reader.
+.PP
+The \fBfaster_file_...()\fP functions all take a parameter representing a file reader.
+.PP
+Behind a \fIfaster_data_p\fP, there is a structure which is divided in two parts :
+the header and the load. The header is the common part of any Faster data, which
+carries the type of the data, its label, its time stamp and its load size. The load
+is the specific part of a data type. The function \fBfaster_data_new()\fP creates
+a new data by clonage. The others \fBfaster_data_...()\fP are access to the composants of
+data :
+.in
+.TP 10
+.I type_alias
+The type of a data returned as \fIunsigned char\fP, identifies the load format.
+.TP
+.I label
+The label returned as \fIunsigned short\fP, identifies the couple formed by a data
+and the source of that data.
+.TP
+.I clock_ns
+Returned as \fIunsigned long long\fP, this is the time stamp of a data, expressed in
+nonosecond with a resolution of 2 ns.
+.TP
+.I clock_sec
+Returned as \fIlong double\fP, this is the time stamp of a data, expressed in second with
+a resolution of 2 ns.
+.TP
+.I load_size
+The load_size specifies the size of the load part in octets.
+.TP
+.I load
+The load is the specific part of a data type. The function \fBfaster_data_load()\fP
+copies the load of the data to \fImem2cpy\fP passed in parameter. For that parameter,
+the exact type can be passed, after a check with \fBfaster_data_type_alias()\fP.
+.PP
+\fIfaster_file_reader_p\fP and \fIfaster_buffer_reader_p\fP are used to read data
+files or buffers. They both read data sequentially with the functions
+\fBfaster_..._reader_next ()\fP which return a pointer to a data (\fInull\fP if no data).
+Care should be taken with that pointer which value is updated each time
+\fBfaster_..._reader_next()\fP is invoked. Those readers are created with the functions
+\fBfaster_..._reader_open()\fP which take a filename for the file reader and a char
+array with its size for the buffer reader.
+.SH NOTES
+Main data declarations such as QDC are included with the library (\fI/Users/qassem.awayies/Projects/compton-npac/pyfasterac/install/include/fasterac\fP),
+see \fIfast_data.h\fP, \fIspectro.h\fP, \fIqdc.h\fP...
+.PP
+The complete sources of the library are provided in \fI/Users/qassem.awayies/Projects/compton-npac/pyfasterac/install/share/fasterac/src\fP.
+.PP
+.PP
+Example codes show how to handle these data with fasterac :
+.TP
+\fIdata_reader\fP\fR
+In this directory, basic examples are given to show how to handle data from file, and
+to decode them.
+.TP
+\fIfaster_to_root\fP\fR
+This directory show how to create a Root tree from a Faster data file. (g++ and root
+library should be installed to compile it)
+.PP
+Those examples and others are located in \fI/Users/qassem.awayies/Projects/compton-npac/pyfasterac/install/share/fasterac/examples\fP.
+Use the command \fIfasterac_examples_copy\fP to get a copy in the current directory.
+.SH AUTHOR
+Written by Jean Hommet (CNRS - LPC Caen).
+.SH "REPORTING BUGS"
+Report bugs to hommet@lpccaen.in2p3.fr
+.SH SEE ALSO
+\fBfasterac_examples_copy  faster_file_display(1)  faster_file_is_sorted  faster_file_sort faster_file_ungroup\fP
+

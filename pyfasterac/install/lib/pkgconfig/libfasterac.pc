@@ -1,0 +1,10 @@
+prefix=/Users/qassem.awayies/Projects/compton-npac/pyfasterac/install
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+Name: libfasterac
+Description: Minimal Faster data analysis library in C
+Version: 2.20
+Libs: -L${libdir} -lfasterac
+Cflags: -I${includedir}
+Requires.private:zlib

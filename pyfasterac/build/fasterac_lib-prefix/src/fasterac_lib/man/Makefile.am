@@ -1,0 +1,2 @@
+dist_man_MANS = faster_disfast.1 faster_file_display.1 fasterac.3 faster_data_type_alias.3 faster_data_label.3 faster_data_clock_sec.3 faster_data_load_size.3 faster_data_load.3 faster_buffer_reader_open.3 faster_buffer_reader_next.3 faster_buffer_reader_close.3 faster_file_reader_open.3 faster_file_reader_next.3 faster_file_reader_close.3
+

@@ -1,0 +1,604 @@
+@ANY@        |
+@ANY@        |/*
+@ANY@        | *  Faster reader demo code
+@ANY@        | *  How to handle faster data specific fields
+@ANY@        | */
+@ANY@        |
+@ANY@        |#include <stdio.h>
+@ANY@        |#include <string.h>
+@ANY@        |
+@ANY@        |#include "fasterac/fasterac.h"       // mandatory for any data type
+@ANY@        |#include "fasterac/utils.h"          // some specific tools
+@FASTDATA_H@ |#include "fasterac/fast_data.h"      // group, oscillo, tref_tdc
+@QDC_H@      |#include "fasterac/qdc.h"            // qdc, qdc_counter
+@SPECTRO_H@  |#include "fasterac/spectro.h"        // crrc4_spectro, trapez_spectro, spectro_counter
+@JDB_HV@     |#include "fasterac/jdb_hv.h"         // hv
+@QT2T_H@     |#include "fasterac/qt2t.h"           // qt2T, qt2T_counter
+@RF_H@       |#include "fasterac/rf.h"             // rf, rf_counter
+@SAMPLER_H@  |#include "fasterac/sampler.h"        // sampler, sampler_counter
+@SCALER_H@   |#include "fasterac/scaler.h"         // scaler, scaler_counter
+@QTDC_H@     |#include "fasterac/qtdc.h"           // qtdc, qtdc_counter
+@ELECTRO_H@  |#include "fasterac/electrometer.h"   // electrometer
+@PLAS_H@     |#include "fasterac/plas.h"           // plas
+@GROUP_H@    |#include "fasterac/group.h"          // group
+@ANY@        |
+@ANY@        |//
+@ANY@        |void data_disp (faster_data_p data, int n, int tab);
+@ANY@        |//
+@GROUP@      |
+@GROUP@      |//
+@GROUP@      |//  GROUP
+@GROUP@      |//
+@GROUP@      |void grp_disp (faster_data_p data, int tab) {
+@GROUP@      |   int                    group_n = 0;
+@GROUP@      |   faster_data_p          group_data;
+@GROUP@      |   unsigned short         lsize        = faster_data_load_size     (data);                // size of all the data inside the group
+@GROUP@      |   void*                  group_buffer = faster_data_load_p        (data);                // get group data (a pointer)
+@GROUP@      |   faster_buffer_reader_p group_reader = faster_buffer_reader_open (group_buffer, lsize); // create a reader for that group
+@GROUP@      |   printf ("\n");
+@GROUP@      |   while ((group_data = faster_buffer_reader_next (group_reader)) != NULL) {              // read each data of the group
+@GROUP@      |      group_n += 1;                                                                       // count nb of data
+@GROUP@      |      data_disp (group_data, group_n, tab);                                               // display the data
+@GROUP@      |   }
+@GROUP@      |   faster_buffer_reader_close (group_reader);                                             // close the reader
+@GROUP@      |//
+@GROUP@      |//  How to copy the group
+@GROUP@      |//
+@GROUP@      |//  #include <string.h>
+@GROUP@      |//
+@GROUP@      |//  void           buffer [4096];                   // get enough memory
+@GROUP@      |//  unsigned short buffer_size;
+@GROUP@      |//
+@GROUP@      |//  buffer_size = faster_data_load (data, buffer);  // buffer_size < 4096
+@GROUP@      |//
+@GROUP@      |}
+@GROUP_C@    |
+@GROUP_C@    |//
+@GROUP_C@    |//  GROUP COUNTER
+@GROUP_C@    |//
+@GROUP_C@    |void grp_count_disp (faster_data_p data, int tab) {
+@GROUP_C@    |   group_counter count;
+@GROUP_C@    |   unsigned int  mult;
+@GROUP_C@    |   unsigned int  delta_t;
+@GROUP_C@    |   faster_data_load (data, &count);                  // get the data
+@GROUP_C@    |   mult    = count.mult;                             // multiplicity of the group
+@GROUP_C@    |   delta_t = count.delta_t;                          // maximum delta time in the group
+@GROUP_C@    |   printf ("mult=%d  delta_t=%d\n", mult, delta_t);
+@GROUP_C@    |}
+@OSCILLO@    |
+@OSCILLO@    |//
+@OSCILLO@    |//  OSCILLO
+@OSCILLO@    |//
+@OSCILLO@    |void oscillo_disp (faster_data_p data, int tab) {
+@OSCILLO@    |   oscillo  o;
+@OSCILLO@    |   int      nb_pts;
+@OSCILLO@    |   double   x0;
+@OSCILLO@    |   double   xlsb;
+@OSCILLO@    |   double   ylsb;
+@OSCILLO@    |   char*    xcap;
+@OSCILLO@    |   char*    ycap;
+@OSCILLO@    |   short*   samp;
+@OSCILLO@    |   int      i, n;
+@OSCILLO@    |   int      n_disp;
+@OSCILLO@    |   faster_data_load (data, &o);                  // get the oscillo
+@OSCILLO@    |   nb_pts = faster_data_oscillo_nb_pts (data);   // nb pts of that oscillo
+@OSCILLO@    |   x0     = o.x0;                                // first point position relative to trigger (xtrig = 0.0)
+@OSCILLO@    |   xlsb   = o.xlsb;                              // time step
+@OSCILLO@    |   ylsb   = o.ylsb;                              // y least significant bit
+@OSCILLO@    |   xcap   = o.xcap;                              // x unit
+@OSCILLO@    |   ycap   = o.ycap;                              // y unit
+@OSCILLO@    |   samp   = o.samp;                              // array of raw y
+@OSCILLO@    |   n_disp = 3;                                   //  n_disp < nb_pts !
+@OSCILLO@    |   printf ("nb_pts=%d x0=%f%s xlsb=%f%s ylsb=%f%s\n", nb_pts, x0, xcap, xlsb, xcap, ylsb, ycap);
+@OSCILLO@    |   for (n=0; n<n_disp; n++) {
+@OSCILLO@    |       for (i=0; i<tab+1; i++) printf ("   ");
+@OSCILLO@    |       printf ("%9f%s %9f%s\n", n * xlsb + x0, xcap, samp[n] * ylsb, ycap);  // point (n) -> x = n * xlsb + x0
+@OSCILLO@    |   }                                                                         //           -> y = ylsb * samp [n]
+@OSCILLO@    |   for (i=0; i<tab+1; i++) printf ("   ");
+@OSCILLO@    |   printf ("  ...\n");
+@OSCILLO@    |}
+@PLAS@       |
+@PLAS@       |//
+@PLAS@       |//  PLAS
+@PLAS@       |//
+@PLAS@       |void plas_raw_disp (faster_data_p data, int tab) {
+@PLAS@       |   int       i;
+@PLAS@       |   plas_raw  plas_raw;
+@PLAS@       |   short     buffer_analog [PLAS_ANALOG_SAMPLES];
+@PLAS@       |   int       analog_samples_read;
+@PLAS@       |   bool      sorted;
+@PLAS@       |
+@PLAS@       |   faster_data_load (data, &plas_raw);           // get the plas raw data (digital (64bits) and analog (242*16bits))
+@PLAS@       |
+@PLAS@       |   printf ("\n");
+@PLAS@       |   printf ("==> Digital part\n");
+@PLAS@       |   printf ("    Device_address = %2d  Input_channel     = %3d \n", plas_raw.digital.device_address, plas_raw.digital.input_channel    );
+@PLAS@       |   printf ("    Start_position = %2d  Baseline_position = %3d \n", plas_raw.digital.start_position, plas_raw.digital.baseline_position);
+@PLAS@       |   printf ("    Trigger_source = %2d  Output_channel    = %3d \n", plas_raw.digital.trigger_source, plas_raw.digital.output_channel   );
+@PLAS@       |   printf ("    Parity         = %2d  ECC               = %3d \n", plas_raw.digital.parity        , plas_raw.digital.ecc              );
+@PLAS@       |
+@PLAS@       |   printf ("==> Analog samples\n");
+@PLAS@       |   // BASELINE SAMPLES
+@PLAS@       |   // RAW
+@PLAS@       |   sorted              = false;
+@PLAS@       |   analog_samples_read = plas_raw_get_baseline_samples (data, buffer_analog, sorted);   // Get baseline samples
+@PLAS@       |   printf ("    Raw    baseline samples    (%d)\t : ", analog_samples_read);
+@PLAS@       |   for (i=0; i<analog_samples_read; i++){
+@PLAS@       |     printf (" %d", buffer_analog[i]);
+@PLAS@       |   }
+@PLAS@       |   printf ("\n");
+@PLAS@       |   // SORTED
+@PLAS@       |   sorted              = true;
+@PLAS@       |   analog_samples_read = plas_raw_get_baseline_samples (data, buffer_analog, sorted);   // Get baseline samples
+@PLAS@       |   printf ("    Sorted baseline samples    (%d)\t : ", analog_samples_read);
+@PLAS@       |   for (i=0; i<analog_samples_read; i++){
+@PLAS@       |     printf (" %d", buffer_analog[i]);
+@PLAS@       |   }
+@PLAS@       |   printf ("\n");
+@PLAS@       |
+@PLAS@       |   // PRE TRIGGER SAMPLES
+@PLAS@       |   // RAW
+@PLAS@       |   sorted              = false;
+@PLAS@       |   analog_samples_read = plas_raw_get_pre_trigger_samples (data, buffer_analog, sorted);   // Get pre trigger samples
+@PLAS@       |   printf ("    Raw    pre trigger samples (%d)\t : ", analog_samples_read);
+@PLAS@       |   for (i=0; i<analog_samples_read; i++){
+@PLAS@       |     printf (" %d", buffer_analog[i]);
+@PLAS@       |   }
+@PLAS@       |   printf ("\n");
+@PLAS@       |   // SORTED
+@PLAS@       |   sorted              = true;
+@PLAS@       |   analog_samples_read = plas_raw_get_pre_trigger_samples (data, buffer_analog, sorted);   // Get pre trigger samples
+@PLAS@       |   printf ("    Sorted pre trigger samples (%d)\t : ", analog_samples_read);
+@PLAS@       |   for (i=0; i<analog_samples_read; i++){
+@PLAS@       |     printf (" %d", buffer_analog[i]);
+@PLAS@       |   }
+@PLAS@       |   printf ("\n");
+@PLAS@       |
+@PLAS@       |   // ALL SAMPLES
+@PLAS@       |   // SORTED
+@PLAS@       |   sorted              = true;
+@PLAS@       |   analog_samples_read = plas_raw_get_analog_samples   (data, buffer_analog, sorted);     // Get all analogues samples (baseline, pre_trigger, post_trigger)
+@PLAS@       |   printf ("    All sorted samples         (%d)\t : ", analog_samples_read);
+@PLAS@       |   for (i=0; i<analog_samples_read; i++){
+@PLAS@       |     printf (" %d", buffer_analog[i]);
+@PLAS@       |   }
+@PLAS@       |   printf ("\n");
+@PLAS@       |}
+@TREF_T@     |
+@TREF_T@     |//
+@TREF_T@     |//  TREF TDC
+@TREF_T@     |//
+@TREF_T@     |void tref_tdc_disp (faster_data_p data, int tab) {                 // TREF is a QDC CFD without charge
+@TREF_T@     |   tref_tdc    tref_data;
+@TREF_T@     |   int         tdc;
+@TREF_T@     |   long double tdc_ns;
+@TREF_T@     |   long double hr_clock_ns;
+@TREF_T@     |   faster_data_load (data, &tref_data);                            // get the data
+@TREF_T@     |   tdc         = tref_data.tdc;                                    // get the tdc (au)
+@TREF_T@     |   tdc_ns      = tref_conv_dt_ns (tdc);                            // convert it in ns
+@TREF_T@     |   hr_clock_ns = faster_data_clock_ns (data) + tdc_ns;             // t = ts + tdc
+@TREF_T@     |   // long double hr_clock_ns = faster_data_hr_clock_ns (data);    // or directly
+@TREF_T@     |   printf ("hrclock=%.3Lfns\n", hr_clock_ns);
+@TREF_T@     |}
+@QDCS@       |
+@QDCS@       |//
+@QDCS@       |//  QDC
+@QDCS@       |//
+@QDCS@       |void qdc_disp (faster_data_p data, int tab) {        // Any QDC : with 1, 2, 3 or 4 charge(s)
+@QDCS@       |   qdc_t_x4    qdc;                                  // qdc_t_x4 fits all qdc kind with or without tdc
+@QDCS@       |   int         nb_q   = qdc_get_nb_q        (data);  // how many charges has this one
+@QDCS@       |   long double tdc_ns = qdc_get_tdc_ns      (data);  // tdc      (ns)   // 0.0 when no cfd
+@QDCS@       |   long double hr_ns  = qdc_get_hr_clock_ns (data);  // tdc + ts (ns)
+@QDCS@       |   faster_data_load (data, &qdc);
+@QDCS@       |   if (nb_q   > 0) printf ("q1=%d sat1=%d  ",  qdc.q1, qdc.q1_saturated);
+@QDCS@       |   if (nb_q   > 1) printf ("q2=%d sat2=%d  ",  qdc.q2, qdc.q2_saturated);
+@QDCS@       |   if (nb_q   > 2) printf ("q3=%d sat3=%d  ",  qdc.q3, qdc.q3_saturated);
+@QDCS@       |   if (nb_q   > 3) printf ("q4=%d sat4=%d  ",  qdc.q4, qdc.q4_saturated);
+@QDCS@       |   printf ("tdc=%.3Lfns    ",  tdc_ns);   // tdc
+@QDCS@       |   printf ("hr_clock=%.3Lfns", hr_ns);    // tdc + time stamp
+@QDCS@       |   printf ("\n");
+@QDCS@       |}
+@QDCS@       |   //
+@QDCS@       |   /////   A different way for QDCs   /////
+@QDCS@       |   //
+@QDCS@       |   // {
+@QDCS@       |   //   int         i;
+@QDCS@       |   //   int         q   [4];                                          // 4 charges max
+@QDCS@       |   //   int         sat [4];                                          // 4 satured charges max
+@QDCS@       |   //   int         nb_q        = qdc_get_nb_q        (data);         // nb of charges
+@QDCS@       |   //   long double tdc_ns      = qdc_get_tdc_ns      (data);         // tdc (ns) (0.0 when no tdc)
+@QDCS@       |   //   long double hr_clock_ns = qdc_get_hr_clock_ns (data);         // ts + tdc
+@QDCS@       |   //   for (i=0; i<nb_q; i++) {
+@QDCS@       |   //      q   [i] = qdc_get_q_num   (data, i+1);                     // charge number i
+@QDCS@       |   //      sat [i] = qdc_get_sat_num (data, i+1);                     // is saturated or not
+@QDCS@       |   //   }
+@QDCS@       |   //   for (i=0; i<nb_q; i++) {
+@QDCS@       |   //      printf ("q%d=%d  ", i+1, q [i]);
+@QDCS@       |   //      if (sat [i]) printf ("saturated  ");
+@QDCS@       |   //   }
+@QDCS@       |   //   if (fabs (tdc_ns) > 0.001) printf ("hrclock=%.3Lfns ", hr_clock_ns);
+@QDCS@       |   //   printf ("\n");
+@QDCS@       |   // }
+@QDC_C@      |
+@QDC_C@      |//
+@QDC_C@      |//  QDC COUNTER
+@QDC_C@      |//
+@QDC_C@      |void qdc_count_disp (faster_data_p data, int tab) {
+@QDC_C@      |   qdc_counter  count;
+@QDC_C@      |   unsigned int calc;
+@QDC_C@      |   unsigned int sent;
+@QDC_C@      |   faster_data_load (data, &count);                  // get the data
+@QDC_C@      |   calc  = count.calc;                               // nb of QDCs calculated by the MnM
+@QDC_C@      |   sent  = count.sent;                               // nb of QDCs sent by the board
+@QDC_C@      |   printf ("calc=%d  sent=%d\n", calc, sent);
+@QDC_C@      |}
+@CRRC4@      |
+@CRRC4@      |//
+@CRRC4@      |// CRRC4 SPECTRO
+@CRRC4@      |//
+@CRRC4@      |void crrc4_spectro_disp (faster_data_p data, int tab) {
+@CRRC4@      |   crrc4_spectro  crrc4_data;
+@CRRC4@      |   double         delta_t;
+@CRRC4@      |   int            measure;
+@CRRC4@      |   int            saturated;
+@CRRC4@      |   int            pileup;
+@CRRC4@      |   faster_data_load (data, &crrc4_data);                  // get the data
+@CRRC4@      |   delta_t    = crrc4_spectro_delta_t_ns (crrc4_data);    // position of max relative to trigger (ns)
+@CRRC4@      |   measure    = crrc4_data.measure;                       // amplitude measured (au)
+@CRRC4@      |   saturated  = crrc4_data.saturated;                     // is saturated or not
+@CRRC4@      |   pileup     = crrc4_data.pileup;                        // has pileup or not
+@CRRC4@      |   printf ("delta_t=%.0lfns  meas=%d", delta_t, measure);
+@CRRC4@      |   if (saturated) printf (" saturated");
+@CRRC4@      |   if (pileup)    printf (" pileup");
+@CRRC4@      |   printf ("\n");
+@CRRC4@      |}
+@TRAPEZ@     |
+@TRAPEZ@     |//
+@TRAPEZ@     |// TRAPEZ SPECTRO
+@TRAPEZ@     |//
+@TRAPEZ@     |void trapez_spectro_disp (faster_data_p data, int tab) {
+@TRAPEZ@     |   trapez_spectro  trap_data;
+@TRAPEZ@     |   long double     hr_clock;
+@TRAPEZ@     |   int             measure;
+@TRAPEZ@     |   int             saturated;
+@TRAPEZ@     |   int             pileup;
+@TRAPEZ@     |   faster_data_load (data, &trap_data);                  // get the data
+@TRAPEZ@     |   hr_clock  = (long double) faster_data_clock_ns (data) + trapez_spectro_conv_dt_ns (trap_data.tdc);
+@TRAPEZ@     |   measure   = trap_data.measure;                        // amplitude (au)         ^tdc in ns
+@TRAPEZ@     |   saturated = trap_data.saturated;                      // is saturated or not
+@TRAPEZ@     |   pileup    = trap_data.pileup;                         // has pileup or not
+@TRAPEZ@     |   printf ("meas=%d", measure);
+@TRAPEZ@     |   if (saturated) printf (" saturated");
+@TRAPEZ@     |   if (pileup)    printf (" pileup");
+@TRAPEZ@     |   printf (" hrclock=%.3Lfns\n", hr_clock);
+@TRAPEZ@     |}
+@ADC_C@      |
+@ADC_C@      |//
+@ADC_C@      |//  SPECTRO COUNTER
+@ADC_C@      |//
+@ADC_C@      |void spectro_count_disp (faster_data_p data, int tab) {
+@ADC_C@      |  spectro_counter  count;
+@ADC_C@      |  unsigned int     trig;
+@ADC_C@      |  unsigned int     calc;
+@ADC_C@      |  unsigned int     sent;
+@ADC_C@      |  faster_data_load (data, &count);                     // get the data
+@ADC_C@      |  trig  = count.trig;                                  // number of ADC triggered
+@ADC_C@      |  calc  = count.calc;                                  //               calculated
+@ADC_C@      |  sent  = count.sent;                                  //               sent
+@ADC_C@      |  printf ("trig=%d  calc=%d  sent=%d\n", trig, calc, sent);
+@ADC_C@      |}
+@JDB_HV@     |
+@JDB_HV@     |//
+@JDB_HV@     |//  JDB HV
+@JDB_HV@     |//
+@JDB_HV@     |void jdb_disp (faster_data_p data, int tab) {
+@JDB_HV@     |  hv_data hv;
+@JDB_HV@     |  faster_data_load (data, &hv);
+@JDB_HV@     |  printf ("board=%s  state=%s  hv=%.2fV  i=%.2fmA  t=%.1f°C", hv_data_Board      (hv),
+@JDB_HV@     |                                                              hv_data_State      (hv),
+@JDB_HV@     |                                                              hv_data_Voltage_V  (hv),
+@JDB_HV@     |                                                              hv_data_Current_mA (hv),
+@JDB_HV@     |                                                              hv_data_Temp_dC    (hv));
+@JDB_HV@     |}
+@QT2T@       |
+@QT2T@       |//
+@QT2T@       |// QT2T
+@QT2T@       |//
+@QT2T@       |void qt2t_disp (faster_data_p data, int tab) {
+@QT2T@       |   qt2t         qtt;
+@QT2T@       |   int          charge;
+@QT2T@       |   int          q_base;
+@QT2T@       |   int          saturated;
+@QT2T@       |   unsigned int width_ns;
+@QT2T@       |   unsigned int max_amp;
+@QT2T@       |   unsigned int max_pos;
+@QT2T@       |   faster_data_load (data, &qtt);                     // get the data
+@QT2T@       |   charge    = qtt.q;                                 // (au)
+@QT2T@       |   q_base    = qtt.q_baseline;                        // (au) charge before threshold
+@QT2T@       |   saturated = qtt.saturated;
+@QT2T@       |   width_ns  = qtt.w * 2;                             // (ns) 2ns per sample
+@QT2T@       |   max_amp   = qtt.a_max;                             // (au)
+@QT2T@       |   max_pos   = qtt.t_max * 2;                         // (ns)
+@QT2T@       |   printf ("Q=%d  width=%dns  max_ampl=%d  max_pos=%dns  q_baseline=%d", charge, width_ns, max_amp, max_pos, q_base);
+@QT2T@       |   if (saturated) printf (" saturated");
+@QT2T@       |   printf ("\n");
+@QT2T@       |}
+@QT2T_C@     |
+@QT2T_C@     |//
+@QT2T_C@     |//  QT2T COUNTER
+@QT2T_C@     |//
+@QT2T_C@     |void qt2t_count_disp (faster_data_p data, int tab) {
+@QT2T_C@     |  qt2t_counter count;
+@QT2T_C@     |  unsigned int trig;
+@QT2T_C@     |  unsigned int calc;
+@QT2T_C@     |  unsigned int sent;
+@QT2T_C@     |  faster_data_load (data, &count);
+@QT2T_C@     |  trig = count.trig;
+@QT2T_C@     |  calc = count.calc;
+@QT2T_C@     |  sent = count.sent;
+@QT2T_C@     |  printf ("trig=%d  calc=%d  sent=%d\n", trig, calc, sent);
+@QT2T_C@     |}
+@RF@         |
+@RF@         |//
+@RF@         |// RF
+@RF@         |//
+@RF@         |void rf_disp (faster_data_p data, int tab) {
+@RF@         |   rf_data      rf;
+@RF@         |   double       period_ns;
+@RF@         |   long double  raw_trig;
+@RF@         |   long double  pll_trig;
+@RF@         |   int          saturated;
+@RF@         |   faster_data_load (data, &rf);                                                // get the data
+@RF@         |   period_ns = rf_period_ns (rf);                                               // period measured (ns)
+@RF@         |   raw_trig  = (long double) faster_data_clock_ns (data) + rf_trig_dt_ns (rf);  // trig time
+@RF@         |   pll_trig  = (long double) faster_data_clock_ns (data) + rf_pll_dt_ns  (rf);  // corrected time
+@RF@         |   saturated = rf.saturated;                                                    // is saturated or not
+@RF@         |   printf ("period=%.6lfns  raw_trig=%.3Lfns  pll_trig=%.3Lfns", period_ns, raw_trig, pll_trig);
+@RF@         |   if (saturated) printf ("  saturated");
+@RF@         |   printf ("\n");
+@RF@         |}
+@RF_C@       |
+@RF_C@       |//
+@RF_C@       |//  RF COUNTER
+@RF_C@       |//
+@RF_C@       |void rf_count_disp (faster_data_p data, int tab) {
+@RF_C@       |  rf_counter   count;
+@RF_C@       |  unsigned int trig;
+@RF_C@       |  unsigned int sent;
+@RF_C@       |  faster_data_load (data, &count);      // get the data
+@RF_C@       |  trig = count.trig;                    // nb of triggered rf
+@RF_C@       |  sent = count.sent;                    // nb of sent
+@RF_C@       |  printf ("trig=%d  sent=%d\n", trig, sent);
+@RF_C@       |}
+@SAMPLER@    |
+@SAMPLER@    |//
+@SAMPLER@    |//  SAMPLER
+@SAMPLER@    |//
+@SAMPLER@    |void sampler_disp (faster_data_p data, int tab) {
+@SAMPLER@    |  sampler  s;
+@SAMPLER@    |  short    i;
+@SAMPLER@    |
+@SAMPLER@    |
+@SAMPLER@    |  printf ("before_trig=%dns width=%dns nb_of_pts=%d range=%s --   ", sampler_before_th_ns     (data)
+@SAMPLER@    |                                                                   , sampler_total_width      (data)
+@SAMPLER@    |                                                                   , sampler_samples_num      (data)
+@SAMPLER@    |                                                                   , sampler_output_range_str (data));
+@SAMPLER@    |  // Display first 10 samples
+@SAMPLER@    |  faster_data_load (data, &s);
+@SAMPLER@    |  for (i=0; i<10; i++) printf ("%d  ", s.data [i]);
+@SAMPLER@    |  printf ("...\n");                                           // time step is 2ns
+@SAMPLER@    |}
+@SMPLR_C@    |
+@SMPLR_C@    |//
+@SMPLR_C@    |//  SAMPLER COUNTER
+@SMPLR_C@    |//
+@SMPLR_C@    |void sampler_count_disp (faster_data_p data, int tab) {
+@SMPLR_C@    |  sampler_counter count;
+@SMPLR_C@    |  unsigned int    trig;
+@SMPLR_C@    |  unsigned int    calc;
+@SMPLR_C@    |  unsigned int    sent;
+@SMPLR_C@    |  faster_data_load (data, &count);     // get the data
+@SMPLR_C@    |  trig = count.trig;                   // nb of trig
+@SMPLR_C@    |  calc = count.calc;                   //       calc
+@SMPLR_C@    |  sent = count.sent;                   //       sent
+@SMPLR_C@    |  printf ("trig=%d  calc=%d  sent=%d\n", trig, calc, sent);
+@SMPLR_C@    |}
+@SCALER@     |
+@SCALER@     |//
+@SCALER@     |//  SCALER
+@SCALER@     |//
+@SCALER@     |void scaler_disp (faster_data_p data, int tab) {
+@SCALER@     |  scaler_measurement scaler;
+@SCALER@     |  unsigned int       n_quanta;
+@SCALER@     |  double             max_ampl;
+@SCALER@     |  double             max_pos;
+@SCALER@     |  double             fw_thres;
+@SCALER@     |  double             qtt_mVns;
+@SCALER@     |  int                qtt_raw;
+@SCALER@     |  int                saturated;
+@SCALER@     |  faster_data_load (data, &scaler);        //  get the data
+@SCALER@     |  n_quanta  = scaler.n_quanta;             //  nb of quanta
+@SCALER@     |  max_ampl  = scaler_max_ampl_mV (scaler); //  max amplitude  (mV)
+@SCALER@     |  max_pos   = scaler_max_pos_ns  (scaler); //  max position   (ns)
+@SCALER@     |  fw_thres  = scaler_fw_thres_ns (scaler); //  full width t2t (ns)
+@SCALER@     |  qtt_mVns  = scaler_qtt_mVns    (scaler); //  total charge   (mVns)
+@SCALER@     |  qtt_raw   = scaler.qtt;                  //  total charge   (au)
+@SCALER@     |  saturated = scaler.saturated;            //  is saturated or not
+@SCALER@     |  printf ("max_ampl=%.3fmV  max_pos=%.2fns  n_quanta=%d  fw_thres=%.2fns  qtt=%.2fmVns  qtt=%d\n", max_ampl, max_pos, n_quanta, fw_thres, qtt_mVns, qtt_raw);
+@SCALER@     |  if (saturated) printf ("saturated");
+@SCALER@     |  printf ("\n");
+@SCALER@     |}
+@SCLR_C@     |
+@SCLR_C@     |//
+@SCLR_C@     |//  SCALER COUNTER
+@SCLR_C@     |//
+@SCLR_C@     |void scaler_count_disp (faster_data_p data, int tab) {
+@SCLR_C@     |  scaler_counter count;
+@SCLR_C@     |  unsigned int   quanta;
+@SCLR_C@     |  unsigned int   calc;
+@SCLR_C@     |  unsigned int   sent;
+@SCLR_C@     |  faster_data_load (data, &count);           // get the data
+@SCLR_C@     |  quanta = count.quanta;                     // nb of quanta
+@SCLR_C@     |  calc   = count.calc;                       // nb of calc
+@SCLR_C@     |  sent   = count.sent;                       //       sent
+@SCLR_C@     |  printf ("quanta=%d  calc=%d  sent=%d\n", quanta, calc, sent);
+@SCLR_C@     |}
+@QTDC@       |
+@QTDC@       |//
+@QTDC@       |//  QTDC
+@QTDC@       |//
+@QTDC@       |void qtdc_disp (faster_data_p data, int tab) {
+@QTDC@       |  int         i;
+@QTDC@       |  qtdc        qt;
+@QTDC@       |  int         nb_q;
+@QTDC@       |  int         saturated;
+@QTDC@       |  int         pileup;
+@QTDC@       |  double      t2t_width_ns;
+@QTDC@       |  int         t2t_max_ok;
+@QTDC@       |  double      t2t_max_ns;
+@QTDC@       |  double      t2t_max_mV;
+@QTDC@       |  int         t2t_max_raw;
+@QTDC@       |  int         t2t_charge_ok;
+@QTDC@       |  double      t2t_charge_mVns;
+@QTDC@       |  int         t2t_charge_raw;
+@QTDC@       |  double      tdc_ns;
+@QTDC@       |  long double hr_clock;
+@QTDC@       |  faster_data_load (data, &qtdc);                   // get the data
+@QTDC@       |  nb_q            = qtdc_nb_q            (qt);      // nb of charges (0, 1, or 2)
+@QTDC@       |  saturated       = qtdc_saturated       (qt);      // is saturated or not
+@QTDC@       |  pileup          = qtdc_pileup          (qt);      // has pileup or not
+@QTDC@       |  t2t_width_ns    = qtdc_t2t_width_ns    (qt);      // width (ns) between the two thresholds
+@QTDC@       |  t2t_max_ok      = qtdc_t2t_max_ok      (qt);      // max between thresh. is measured or not
+@QTDC@       |  t2t_max_ns      = qtdc_t2t_max_pos_ns  (qt);      // position of max (ns)
+@QTDC@       |  t2t_max_mV      = qtdc_t2t_max_mV      (qt);      // value of max (mV)
+@QTDC@       |  t2t_max_raw     = qtdc_t2t_max_raw     (qt);      // raw value of max (au)
+@QTDC@       |  t2t_charge_ok   = qtdc_t2t_charge_ok   (qt);      // charge auto between thres. is measured or not
+@QTDC@       |  t2t_charge_mVns = qtdc_t2t_charge_mVns (qt);      // charge auto (mVns)
+@QTDC@       |  t2t_charge_raw  = qtdc_t2t_charge_raw  (qt);      // raw charge auto (au)
+@QTDC@       |  tdc_ns          = qtdc_tdc_ns          (qt);      // tdc (ns)
+@QTDC@       |  hr_clock        = (long double) faster_data_clock_ns (data) + tdc_ns;
+@QTDC@       |  printf ("nb_q=%d", nb_q);
+@QTDC@       |  if (saturated) printf (" saturated");
+@QTDC@       |  if (pileup)    printf (" pileup");
+@QTDC@       |  if (nb_q > 0) {
+@QTDC@       |     printf ("\n"); for (i=0; i<tab; i++) printf ("   ");
+@QTDC@       |     for (i=1; i<=nb_q; i++) printf ("q%d=%.3fmVns", i, qtdc_charge_mVns (qt, i));
+@QTDC@       |     printf ("\n"); for (i=0; i<tab; i++) printf ("   ");
+@QTDC@       |     for (i=1; i<=nb_q; i++) printf ("q%d=%dau",     i, qtdc_charge_raw  (qt, i));
+@QTDC@       |  }
+@QTDC@       |  printf ("\n"); for (i=0; i<tab; i++) printf ("   ");
+@QTDC@       |  printf ("t2t: width=%.2fns", t2t_width_ns);
+@QTDC@       |  if (t2t_max_ok)    printf (" max_pos=%.2fns max=%.3fmV  max=%dau", t2t_max_ns, t2t_max_mV, t2t_max_raw);
+@QTDC@       |  if (t2t_charge_ok) printf (" charge=%.3fmVns  charge=%dau", t2t_charge_mVns, t2t_charge_raw);
+@QTDC@       |  printf ("\n"); for (i=0; i<tab; i++) printf ("   ");
+@QTDC@       |  printf ("hrclock=%.3Lf\n", hr_clock);
+@QTDC@       |}
+@QTDC_C@     |
+@QTDC_C@     |//
+@QTDC_C@     |//  QTDC COUNTER
+@QTDC_C@     |//
+@QTDC_C@     |void qtdc_count_disp (faster_data_p data, int tab) {
+@QTDC_C@     |  qtdc_counter count;
+@QTDC_C@     |  unsigned int trig;
+@QTDC_C@     |  unsigned int calc;
+@QTDC_C@     |  unsigned int sent;
+@QTDC_C@     |  faster_data_load (data, &count);    // get the data
+@QTDC_C@     |  trig = count.trig;                  // nb of triggered data
+@QTDC_C@     |  calc = count.calc;                  // nb of calulated data
+@QTDC_C@     |  sent = count.sent;                  // nb of sent data
+@QTDC_C@     |  printf ("trig=%d  calc=%d  sent=%d\n", trig, calc, sent);
+@QTDC_C@     |}
+@ELECTRO@    |
+@ELECTRO@    |//
+@ELECTRO@    |//  ELECTROMETER
+@ELECTRO@    |//
+@ELECTRO@    |void electro_disp (faster_data_p data, int tab) {
+@ELECTRO@    |   int               j;
+@ELECTRO@    |   electrometer_data elec;
+@ELECTRO@    |   int               nb_out;
+@ELECTRO@    |   int               satur  [33];
+@ELECTRO@    |   double            charge [33];
+@ELECTRO@    |   faster_data_load (data, &elec);                               //  get the data
+@ELECTRO@    |   nb_out = electrometer_nb_channels (elec);                     //  nb of channels in the data
+@ELECTRO@    |   //
+@ELECTRO@    |   for (j=1; j<=32; j++) {                                       //  channels from 1 to 32
+@ELECTRO@    |     satur [j] = electrometer_channel_saturated (elec, j);       //  is saturated or not
+@ELECTRO@    |     if (satur [j] != -1) {                                      //  -1  =>  channel 'j' not present in the data
+@ELECTRO@    |       charge [j] = electrometer_channel_charge_pC (elec, j);    //  get charge from channel 'j' (pico Coulomb)
+@ELECTRO@    |     }
+@ELECTRO@    |   }
+@ELECTRO@    |   printf ("Nout=%d  ", nb_out);
+@ELECTRO@    |   for (j=1; j<=32; j++) {
+@ELECTRO@    |     if (satur [j] != -1) {                                      //  -1  =>  channel 'j' not present in the data
+@ELECTRO@    |        printf ("[%d:%.3fpC", j, charge [j]);                    //  display [chan:charge] or [chan:charge:sat]
+@ELECTRO@    |        if (satur [j]) printf (":sat] ");
+@ELECTRO@    |        else           printf ("] ");
+@ELECTRO@    |     }
+@ELECTRO@    |   }
+@ELECTRO@    |   printf ("\n");
+@ELECTRO@    |}
+@ANY@        |
+@ANY@        |//
+@ANY@        |//  ANY DATA
+@ANY@        |//
+@ANY@        |void data_disp (faster_data_p data, int n, int tab) {
+@ANY@        |   int  i;
+@ANY@        |   unsigned short label = faster_data_label      (data);               //  label of the data
+@ANY@        |   long double    clock = faster_data_clock_sec  (data);               //  time stamp of the data (s)
+@ANY@        |   unsigned char  alias = faster_data_type_alias (data);               //  type of the data
+@ANY@        |   for (i=0; i<tab; i++) printf ("   ");
+@ANY@        |   printf ("%d %d %s %.9Lfs  ", n, label, type_name (alias), clock);   //  display label, type name, time stamp for all data
+@ANY@        |   if (0)  {} // what else ?                                           //  display specific data parts depending of the data type
+@GROUP@      |   else if (alias == GROUP_TYPE_ALIAS)              grp_disp            (data, tab+1);
+@GROUP_C@    |   else if (alias == GROUP_COUNTER_TYPE_ALIAS)      grp_count_disp      (data, tab+1);
+@OSCILLO@    |   else if (alias == OSCILLO_TYPE_ALIAS)            oscillo_disp        (data, tab+1);
+@PLAS@       |   else if (alias == PLAS_RAW_DATA_TYPE_ALIAS)      plas_raw_disp       (data, tab+1);
+@TREF_T@     |   else if (alias == TREF_TDC_TYPE_ALIAS)           tref_tdc_disp       (data, tab+1);
+@QDCS@       |   else if (is_qdc (data))                          qdc_disp            (data, tab+1);  //  any QDC type
+@QDC_C@      |   else if (alias == QDC_COUNTER_TYPE_ALIAS)        qdc_count_disp      (data, tab+1);
+@CRRC4@      |   else if (alias == CRRC4_SPECTRO_TYPE_ALIAS)      crrc4_spectro_disp  (data, tab+1);
+@TRAPEZ@     |   else if (alias == TRAPEZ_SPECTRO_TYPE_ALIAS)     trapez_spectro_disp (data, tab+1);
+@ADC_C@      |   else if (alias == SPECTRO_COUNTER_TYPE_ALIAS)    spectro_count_disp  (data, tab+1);
+@JDB_HV@     |   else if (alias == JDB_HV_TYPE_ALIAS)             jdb_disp            (data, tab+1);
+@QT2T@       |   else if (alias == QT2T_TYPE_ALIAS)               qt2t_disp           (data, tab+1);
+@QT2T_C@     |   else if (alias == QT2T_COUNTER_TYPE_ALIAS)       qt2t_count_disp     (data, tab+1);
+@RF@         |   else if (alias == RF_DATA_TYPE_ALIAS)            rf_disp             (data, tab+1);
+@RF_C@       |   else if (alias == RF_COUNTER_TYPE_ALIAS)         rf_count_disp       (data, tab+1);
+@SAMPLER@    |   else if (alias == SAMPLER_DATA_TYPE_ALIAS)       sampler_disp        (data, tab+1);
+@SMPLR_C@    |   else if (alias == SAMPLER_COUNTER_TYPE_ALIAS)    sampler_count_disp  (data, tab+1);
+@SCALER@     |   else if (alias == SCALER_MEASUREMENT_TYPE_ALIAS) scaler_disp         (data, tab+1);
+@SCLR_C@     |   else if (alias == SCALER_COUNTER_TYPE_ALIAS)     scaler_count_disp   (data, tab+1);
+@QTDC@       |   else if (alias == QTDC_TYPE_ALIAS)               qtdc_disp           (data, tab+1);
+@QTDC_C@     |   else if (alias == QTDC_COUNTER_TYPE_ALIAS)       qtdc_count_disp     (data, tab+1);
+@ELECTRO@    |   else if (alias == ELECTROMETER_TYPE_ALIAS)       electro_disp        (data, tab+1);
+@ANY@        |   else printf ("\n");
+@ANY@        |}
+@ANY@        |
+@ANY@        |//
+@ANY@        |//  MAIN
+@ANY@        |//
+@ANY@        |int main (int argc, char** argv) {
+@ANY@        |   faster_file_reader_p  reader;      //  data file reader
+@ANY@        |   faster_data_p         data;        //  data pointer
+@ANY@        |   int                   n    = 0;    //  data num
+@ANY@        |   int                   tab  = 0;    //  deco
+@ANY@        |   if (argc < 2) {                                                //  command args
+@ANY@        |      printf ("usage : \n");
+@ANY@        |      printf ("        %s  filename.fast\n", argv[0]);
+@ANY@        |      printf ("\n");
+@ANY@        |      return EXIT_SUCCESS;
+@ANY@        |   }
+@ANY@        |   reader = faster_file_reader_open (argv[1]);                    //  open the reader
+@ANY@        |   if (reader == NULL) {
+@ANY@        |      printf ("error opening file %s\n", argv[1]);
+@ANY@        |      return EXIT_FAILURE;
+@ANY@        |   }
+@ANY@        |   while ((data = faster_file_reader_next (reader)) != NULL) {    //  read each data one by one
+@ANY@        |      printf ("\n");
+@ANY@        |      data_disp (data, n, tab);                                   //  display each
+@ANY@        |      n = n + 1;                                                  //  see above : common part 'data_disp' + specific part = f (type)
+@ANY@        |   }
+@ANY@        |   faster_file_reader_close (reader);                             //  close the reader
+@ANY@        |   return EXIT_SUCCESS;
+@ANY@        |}
+@ANY@        |

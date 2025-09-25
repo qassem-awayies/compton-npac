@@ -1,0 +1,112 @@
+
+v2.15 dec-2019
+  r5 - U20 -> fix reader demo makefile (jan 21)
+  r4 - U18 -> fix reader demo code indentation
+  r3 - +optional environment variable FARRAY_FILE_SIZE (2200000000 when not defined)
+  r2 - reader code demo : QDC
+  r1 - reader code demo : change data pointer to data
+  r0 - add prog fasterac_reader_code
+
+v2.14 nov-2019
+  r3 - new group size (from 1500 to 4100)
+
+v2.14 jul-2019
+  r2 - fix examples/osciroot -> include "limits.h" for root6
+  r1 - fix qdc 'unsigned int' charge
+     - faster_data_load_p (char*)
+  r0 - fix "for (int i=0; ..."
+     - add sampling
+
+v2.13 mar-2019
+  r2 - read gzip files (.gz)
+  r1 - faster_disfast -> faster_file_display
+     - faster_file_display fix option -n
+
+v2.12 jun-2018
+  - data attributes access example : inlined in each data type header (include/fasterac/atype.h)
+  - add MISSING & MISSED data
+  - add QT2T - threshold to threshold charge (auto charge window)
+
+v2.11 sep-2017
+  - adc & adc_trap => crrc4_spectro & trapez_spectro
+  - use libgnuplot-i
+  - online data with remote faster_gui & pipe
+
+v2.10 mar-2017
+  - adc_caras, qdc_caras, rf_caras => adc, qdc, rf
+  - adc_hr                         => adc_trap
+
+v2.8 sep-2016
+  - adc_hr.h : spectro with trapezoidal shaper and better time resolution
+
+v2.7 may-2016
+  - jdb hv data
+
+V2.6 feb-2015
+  - buffer_reader fix -> buffer size < 12
+  - farray fix        -> position = f(t)
+
+V2.5 nov-2014
+  - SAMPLER Data
+  - hr timing utils
+
+V2.4 oct-2014
+  - F A R R A Y : data in memory - using faster data array with 'farray.h'
+  - faster_disfast :
+      - no more -s option for 'start-at'
+      - no more -r option for 'reduced'
+      + short data format with -s
+      + first data selection with -f
+      + relative time display with -r and -R
+      + time unit selection with -u
+      + data type name in summary
+      + examples : faster_to_root +rootlogon.C +TEST.sh
+
+V2.3 may-2014
+  - faster_data_clock_ns  : new function returning 'unsigned long long' as nanosec.
+  - faster_data_clock_sec : now returning 'long double' as second.
+  - report clock changes to examples and function faster_display from fasterac/utils
+
+V2.2 may-2014
+  - fasterac_examples_copy : command to dump a copy of the examples
+  - examples/osciroot : oscillo statistics
+  - examples/misc : faster_file_cut & spectro_test.sh
+  - share/fasterac/data : common data for examples
+
+V2.1-2 may-2014
+  - ADC data (delta_t)  bug fix
+
+V2.1 mar-2014
+  - shared lib
+
+V2.0 nov-2013
+  - Progs : faster_file_display (=faster_disfast), faster_file_is_sorted, faster_file_sort, faster_file_ungroup
+  - examples/misc -> spectro
+  - examples/oscillos -> sum
+
+V1.8 sep-2013
+  - scaler : +max_pos +qtt
+
+V1.6 sep-2013
+  - faster_to_root : examples++
+
+V1.5 sep-2013
+  - fix rf precision
+
+V1.4 jul-2013
+  - add scaler
+  - add qtdc
+
+V1.3 fev-2013
+  - add electrometer
+  - disfast is now faster_disfast
+
+V1.2 jan-2013
+  - TDC HighRes Clock : "2ns_clock + 8p_tdc" resolution need "long double"
+  - fix reader_example.c : QDC_TOF_X4 display
+  - upgrade 'disfast'
+
+V1.1 dec-2012
+  - upgrade packaging
+  - add example osci2ascii.c
+

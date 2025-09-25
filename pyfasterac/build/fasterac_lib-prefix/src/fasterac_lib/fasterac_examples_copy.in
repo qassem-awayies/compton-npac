@@ -1,0 +1,10 @@
+#!/bin/bash
+
+
+if [ -e fasterac_examples ]; then
+  echo "error: fasterac_examples already exists"
+fi
+
+cp -r @prefix@/share/fasterac/examples ./fasterac_examples
+
+

@@ -1,0 +1,1 @@
+cmd='./configure;--prefix=/Users/qassem.awayies/Projects/compton-npac/pyfasterac/install'
