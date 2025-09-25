@@ -74,7 +74,7 @@ def integrate_cb2d_2sigma_root(cb_func, params):
 def propagate_integration_error_mc(cb_func, params, param_errors, n_samples=1000, random_seed=None):
     """
     Estimate the propagated uncertainty in a 2D integral using Monte Carlo sampling.
-    
+
     Parameters:
         cb_func: Callable
             The function to integrate. Must accept the same parameter list format as 'params'.
@@ -86,7 +86,7 @@ def propagate_integration_error_mc(cb_func, params, param_errors, n_samples=1000
             Number of Monte Carlo samples to generate.
         random_seed: int or None
             Optional random seed for reproducibility.
-    
+
     Returns:
         mean_integral: float
             The mean value of the computed integrals.
@@ -99,15 +99,40 @@ def propagate_integration_error_mc(cb_func, params, param_errors, n_samples=1000
     params = np.array(params)
     param_errors = np.array(param_errors)
 
-    samples = np.random.normal(loc=params, scale=param_errors, size=(n_samples, len(params)))
-    integrals = np.zeros(n_samples)
+    # Indices of parameters that must remain strictly positive
+    positive_indices = [0, 2, 3, 4, 6, 7, 8]  # A, sigma_x, alpha_x, n_x, sigma_y, alpha_y, n_y
 
-    for i in range(n_samples):
-        sampled_params = samples[i]
-        integrals[i] = integrate_cb2d_2sigma_root(cb_func, sampled_params)
+    integrals = []
+    rejected = 0
+    max_attempts = 10 * n_samples  # Avoid infinite loops
+
+    attempts = 0
+    while len(integrals) < n_samples and attempts < max_attempts:
+        attempts += 1
+        sampled_params = np.random.normal(loc=params, scale=param_errors)
+
+        # Check for unphysical values
+        if any(sampled_params[i] <= 0 for i in positive_indices):
+            rejected += 1
+            continue
+
+        try:
+            result = integrate_cb2d_2sigma_root(cb_func, sampled_params)
+            if np.isfinite(result):
+                integrals.append(result)
+            else:
+                rejected += 1
+        except Exception:
+            rejected += 1
+
+    if len(integrals) == 0:
+        raise RuntimeError("All Monte Carlo samples were rejected due to invalid parameter values.")
 
     mean_integral = np.mean(integrals)
     std_integral = np.std(integrals)
+
+    if rejected > 0:
+        print(f"[Warning] Rejected {rejected} invalid samples out of {attempts} attempts.")
 
     return mean_integral, std_integral
 
