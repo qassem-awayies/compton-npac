@@ -282,15 +282,15 @@ with open(results_file_path, "w") as f:
             continue
 
         print(f"Fitting angle {angle}° ...")
-        bin_values = load_bin_data_from_tree(bin_tree)
+        bin_values = np.array(load_bin_data_from_tree(bin_tree))
         metadata = angle_metadata[angle]
 
         print(f"  Loaded {len(bin_values)} bins (expected {metadata['n_bins']})")
 
-        init_params = [metadata['maximum'],
+        init_params = np.array([metadata['maximum'],
                        metadata['mu_x_guess'], metadata['sigma_x_guess'], 1.5, 3.0,
                        metadata['mu_y_guess'], metadata['sigma_y_guess'], 1.5, 3.0,
-                       0.0, 0.0, 0.0]
+                       0.0, 0.0, 0.0])
         
         fitted_params, errors, reduced_chi2, chi2_val, ndf = fit_with_iminuit(init_params, bin_values)
 
