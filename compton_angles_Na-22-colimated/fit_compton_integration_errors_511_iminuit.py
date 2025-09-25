@@ -8,6 +8,7 @@ from scipy.integrate import dblquad
 import array
 from iminuit import Minuit
 from iminuit.util import describe
+from functools import partial
 
 # ------------------------
 # Parameters
@@ -143,9 +144,9 @@ def propagate_integration_error_mc(cb_func, params, param_errors, n_samples=1000
 def chi2_cb2d_named(A, mu_x, sigma_x, alpha_x, n_x,
                          mu_y, sigma_y, alpha_y, n_y,
                          B, C, D, bin_values=None):
-    pars = [A, mu_x, sigma_x, alpha_x, n_x,
+    pars = np.array([A, mu_x, sigma_x, alpha_x, n_x,
             mu_y, sigma_y, alpha_y, n_y,
-            B, C, D]
+            B, C, D])
     return chi2_to_minimize(pars, bin_values)
 
 
@@ -197,19 +198,20 @@ def calculate_parameter_errors(fitted_params, bin_values, delta=1e-4):
         return np.zeros(n_params)
 
 def fit_with_iminuit(init_params, bin_values):
-    # Wrap chi2 with named parameters
     param_names = ["A", "mu_x", "sigma_x", "alpha_x", "n_x",
                    "mu_y", "sigma_y", "alpha_y", "n_y",
                    "B", "C", "D"]
-
-    # Convert to dict of initial values
     init_dict = dict(zip(param_names, init_params))
 
-    m = Minuit(chi2_cb2d_named, **init_dict, bin_values=bin_values)
+    # Freeze bin_values using partial
+    chi2_func = partial(chi2_cb2d_named, bin_values=bin_values)
+
+    # Pass the fixed-function without bin_values as a free parameter
+    m = Minuit(chi2_func, **init_dict)
     m.errordef = Minuit.LEAST_SQUARES
 
-    m.migrad()  # Minimize chi2
-    m.hesse()   # Compute uncertainties
+    m.migrad()
+    m.hesse()
 
     if not m.fmin.is_valid:
         print("Warning: Fit did not converge.")
