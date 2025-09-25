@@ -20,7 +20,7 @@ calibration = {
 # ------------------------
 angles = range(0, 181, 15)
 file_template = "compton_{angle}_Na-22-colimated.fast/compton_{angle}_Na-22-colimated_0001.fast"
-out_dir = "output_cb2d_scipyfit_overlay"
+out_dir = "../output"
 os.makedirs(out_dir, exist_ok=True)
 
 dat_file_path = os.path.join(out_dir, "peak_parameters.dat")
