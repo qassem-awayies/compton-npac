@@ -1,181 +1,190 @@
-import pyfasterac as pyf
-import ROOT
-from ROOT import Math
-import array
-import os
-import math
-import numpy as np
-from scipy.optimize import minimize
+#include <TFile.h>
+#include <TH2.h>
+#include <TF2.h>
+#include <TKey.h>
+#include <TIterator.h>
+#include <TROOT.h>
+#include <TCanvas.h>
+#include <TBox.h>
+#include <TString.h>
+#include <TFitResultPtr.h>
+#include <TMath.h>
 
-# ------------------------
-# Calibration
-# ------------------------
-calibration = {
-    1: lambda q: 0.001841 * q - 31.41,
-    2: lambda q: 0.001628 * q - 16.36
+#include <fstream>
+#include <iostream>
+#include <cmath>
+#include <algorithm>
+
+// ---------------------
+// Tilted 2D Double Gaussian + linear background
+// ---------------------
+Double_t TiltedDoubleGauss2D(Double_t *x, Double_t *par) {
+    double X = x[0], Y = x[1];
+    double x0 = par[2], y0 = par[3];
+    double theta = par[8];
+
+    double xrot =  (X - x0)*cos(theta) + (Y - y0)*sin(theta);
+    double yrot = -(X - x0)*sin(theta) + (Y - y0)*cos(theta);
+
+    double gaus1 = par[0]*exp(-0.5*(xrot*xrot/(par[4]*par[4]) + yrot*yrot/(par[5]*par[5])));
+    double gaus2 = par[1]*exp(-0.5*(xrot*xrot/(par[6]*par[6]) + yrot*yrot/(par[7]*par[7])));
+
+    double bg = par[9] + par[10]*X + par[11]*Y + par[12]*X*Y;
+
+    return gaus1 + gaus2 + bg;
 }
 
-# ------------------------
-# Parameters
-# ------------------------
-angles = range(0, 181, 15)
-file_template = "compton_{angle}_Na-22-colimated.fast/compton_{angle}_Na-22-colimated_0001.fast"
-out_dir = "../output"
-os.makedirs(out_dir, exist_ok=True)
+// ---------------------
+// Compute weighted centroid over a box around max bin
+// ---------------------
+void WeightedCentroid(TH2 *h2, int binxMax, int binyMax, int box_size,
+                      double &xCenter, double &yCenter, double &xRMS, double &yRMS) {
+    int nbinsX = h2->GetXaxis()->GetNbins();
+    int nbinsY = h2->GetYaxis()->GetNbins();
 
-dat_file_path = os.path.join(out_dir, "peak_parameters.dat")
-fit_param_file_path = os.path.join(out_dir, "fit_parameters.dat")
-box_size = 20
+    double sum_w = 0.0, sum_x = 0.0, sum_y = 0.0;
+    double sum_x2 = 0.0, sum_y2 = 0.0;
 
-# ------------------------
-# Functions
-# ------------------------
-def build_histogram(file_path, nbins=200, e_max=2000):
-    h2 = ROOT.TH2D("coinc", "Detector1 - Detector2;E1 (keV);E2 (keV)",
-                   nbins, 0, e_max, nbins, 0, e_max)
-    reader = pyf.fastreader(file_path)
-    while reader.get_next_event():
-        event = reader.get_event()
-        if event.multiplicity < 2:
-            continue
-        E1_list, E2_list = [], []
-        for sub_event in event.sub_events:
-            det_id = sub_event.label % 1000
-            E = calibration.get(det_id, lambda q: 0)(sub_event.q)
-            if det_id == 1:
-                E1_list.append(E)
-            elif det_id == 2:
-                E2_list.append(E)
-        for E1 in E1_list:
-            for E2 in E2_list:
-                h2.Fill(E1, E2)
-    return h2
+    for (int i = std::max(1, binxMax-box_size); i <= std::min(nbinsX, binxMax+box_size); ++i) {
+        for (int j = std::max(1, binyMax-box_size); j <= std::min(nbinsY, binyMax+box_size); ++j) {
+            double w = h2->GetBinContent(i,j);
+            if (w <= 0) continue;
+            double x = h2->GetXaxis()->GetBinCenter(i);
+            double y = h2->GetYaxis()->GetBinCenter(j);
+            sum_w += w;
+            sum_x += w*x;
+            sum_y += w*y;
+            sum_x2 += w*x*x;
+            sum_y2 += w*y*y;
+        }
+    }
 
-def analyze_peak(hist2d, box_size=20):
-    if hist2d.GetEntries() < 10:
-        return None
-    max_bin = hist2d.GetMaximumBin()
-    binx, biny, binz = array.array('i',[0]), array.array('i',[0]), array.array('i',[0])
-    hist2d.GetBinXYZ(max_bin, binx, biny, binz)
-    peak_bin_x, peak_bin_y = binx[0], biny[0]
+    if (sum_w > 0) {
+        xCenter = sum_x/sum_w;
+        yCenter = sum_y/sum_w;
+        xRMS = std::sqrt(sum_x2/sum_w - xCenter*xCenter);
+        yRMS = std::sqrt(sum_y2/sum_w - yCenter*yCenter);
+    } else {
+        // fallback to global mean and RMS
+        xCenter = h2->GetMean(1);
+        yCenter = h2->GetMean(2);
+        xRMS = h2->GetRMS(1);
+        yRMS = h2->GetRMS(2);
+    }
+}
 
-    sum_w = sum_x = sum_y = sum_x2 = sum_y2 = 0.0
-    for ix in range(max(1, peak_bin_x - box_size), min(hist2d.GetNbinsX()+1, peak_bin_x + box_size + 1)):
-        for iy in range(max(1, peak_bin_y - box_size), min(hist2d.GetNbinsY()+1, peak_bin_y + box_size + 1)):
-            w = hist2d.GetBinContent(ix, iy)
-            if w == 0: continue
-            x = hist2d.GetXaxis().GetBinCenter(ix)
-            y = hist2d.GetYaxis().GetBinCenter(iy)
-            sum_w += w; sum_x += w*x; sum_y += w*y
-            sum_x2 += w*x*x; sum_y2 += w*y*y
+// ---------------------
+// Main program
+// ---------------------
+int main() {
 
-    mu_x = sum_x/sum_w
-    mu_y = sum_y/sum_w
-    sigma_x = math.sqrt(sum_x2/sum_w - mu_x**2)
-    sigma_y = math.sqrt(sum_y2/sum_w - mu_y**2)
-    return mu_x, mu_y, sigma_x, sigma_y, peak_bin_x, peak_bin_y
+    const char* filename = "../output/histogram_data.root";
+    const char* outdat   = "../output/fit_results_dblgauss_positive.dat";
 
-def cb2d_linear_manual(xy, par):
-    xx, yy = xy
-    A = par[0]
-    mu_x, sigma_x, alpha_x, n_x = par[1:5]
-    mu_y, sigma_y, alpha_y, n_y = par[5:9]
-    B, C, D = par[9:12]
+    TFile *f = TFile::Open(filename, "READ");
+    if (!f || f->IsZombie()) {
+        std::cerr << "Error: cannot open " << filename << std::endl;
+        return 1;
+    }
 
-    cbx = ROOT.Math.crystalball_pdf(xx, alpha_x, n_x, sigma_x, mu_x)
-    cby = ROOT.Math.crystalball_pdf(yy, alpha_y, n_y, sigma_y, mu_y)
+    std::ofstream fout(outdat);
+    fout << "#HistName  "
+         << "Amp1 dAmp1  Amp2 dAmp2  X0 dX0  Y0 dY0  SigmaX1 dSigmaX1  SigmaY1 dSigmaY1  "
+         << "SigmaX2 dSigmaX2  SigmaY2 dSigmaY2  Theta dTheta  Const dConst  "
+         << "Ax dAx  Ay dAy  Cxy dCxy  Chi2 NDF\n";
 
-    return A * cbx * cby + B + C*xx + D*yy
+    TIter nextkey(f->GetListOfKeys());
+    TKey *key;
+    while ((key = (TKey*)nextkey())) {
+        TObject *obj = key->ReadObj();
+        if (!obj->InheritsFrom("TH2")) continue;
 
-def chi2_to_minimize(pars, bin_values):
-    chi2 = 0.0
-    for x, y, h in bin_values:
-        f = cb2d_linear_manual((x, y), pars)
-        if h > 0:
-            chi2 += (h - f)**2 / h
-    return chi2
+        TH2 *h2 = dynamic_cast<TH2*>(obj);
+        if (!h2) continue;
 
-# ------------------------
-# Main loop
-# ------------------------
-with open(dat_file_path,"w") as fdat, open(fit_param_file_path,"w") as ffit:
-    fdat.write("# angle mu_x mu_y sigma_x sigma_y E_sum deviation\n")
-    ffit.write("# angle A mu_x sigma_x alpha_x n_x mu_y sigma_y alpha_y n_y B C D chi2 reduced_chi2\n")
+        std::cout << "Fitting " << h2->GetName() << std::endl;
 
-    for angle in angles:
-        file_path = file_template.format(angle=angle)
-        if not os.path.exists(file_path):
-            print(f"Missing {file_path}, skipping.")
-            continue
+        // --- Smooth histogram mildly ---
+        TH2 *h2sm = (TH2*)h2->Clone("h2sm");
+        h2sm->Smooth(1);
 
-        print(f"Processing angle {angle}° ...")
-        h2 = build_histogram(file_path)
-        guess = analyze_peak(h2, box_size)
-        if guess is None: continue
-        mu_x, mu_y, sigma_x, sigma_y, peak_bin_x, peak_bin_y = guess
+        // --- Find max bin ---
+        int binxMax, binyMax, binzMax;
+        h2sm->GetMaximumBin(binxMax, binyMax, binzMax);
 
-        # Fit window
-        fit_box = max(5, box_size//2)
-        x_min = h2.GetXaxis().GetBinLowEdge(max(1, peak_bin_x - fit_box))
-        x_max = h2.GetXaxis().GetBinUpEdge(min(h2.GetNbinsX(), peak_bin_x + fit_box))
-        y_min = h2.GetYaxis().GetBinLowEdge(max(1, peak_bin_y - fit_box))
-        y_max = h2.GetYaxis().GetBinUpEdge(min(h2.GetNbinsY(), peak_bin_y + fit_box))
+        double xCenter, yCenter, xRMS, yRMS;
+        WeightedCentroid(h2sm, binxMax, binyMax, 10, xCenter, yCenter, xRMS, yRMS);
 
-        # Flatten histogram bins in fit window, ignore low counts
-        bin_values = []
-        for ix in range(1, h2.GetNbinsX()+1):
-            x_val = h2.GetXaxis().GetBinCenter(ix)
-            if x_val < x_min or x_val > x_max: continue
-            for iy in range(1, h2.GetNbinsY()+1):
-                y_val = h2.GetYaxis().GetBinCenter(iy)
-                if y_val < y_min or y_val > y_max: continue
-                h_val = h2.GetBinContent(ix, iy)
-                if h_val < 5:  # ignore very low counts
-                    continue
-                bin_values.append( (x_val, y_val, h_val) )
+        delete h2sm;
 
-        # Initial parameters
-        init_params = [h2.GetMaximum(),
-                       mu_x, sigma_x, 1.5, 3.0,
-                       mu_y, sigma_y, 1.5, 3.0,
-                       0.0, 0.0, 0.0]
+        // --- Fit region: ±3×RMS around centroid ---
+        double xmin = xCenter - 3*xRMS;
+        double xmax = xCenter + 3*xRMS;
+        double ymin = yCenter - 3*yRMS;
+        double ymax = yCenter + 3*yRMS;
 
-        # Minimize χ²
-        result = minimize(chi2_to_minimize, init_params, args=(bin_values,), method='L-BFGS-B')
-        fitted_params = result.x
-        chi2_val = chi2_to_minimize(fitted_params, bin_values)
-        ndf = len(bin_values) - len(fitted_params)
-        reduced_chi2 = chi2_val / ndf if ndf > 0 else float('nan')
+        TF2 *f2 = new TF2("f2", TiltedDoubleGauss2D, xmin, xmax, ymin, ymax, 13);
+        f2->SetNpx(100); f2->SetNpy(100);
 
-        # Save parameters
-        E_sum = mu_x + mu_y
-        deviation = E_sum - 511
-        fdat.write(f"{angle} {mu_x:.2f} {mu_y:.2f} {sigma_x:.2f} {sigma_y:.2f} {E_sum:.2f} {deviation:.2f}\n")
-        ffit.write(f"{angle} " + " ".join(f"{p:.4f}" for p in fitted_params) +
-                   f" {chi2_val:.2f} {reduced_chi2:.2f}\n")
+        // --- Initial guesses ---
+        Double_t initParams[13] = {
+            h2->GetMaximum(), 0.3*h2->GetMaximum(), // Amp1, Amp2
+            xCenter, yCenter,                       // X0, Y0
+            xRMS, yRMS,                             // SigmaX1, SigmaY1
+            2.0*xRMS, 2.0*yRMS,                     // SigmaX2, SigmaY2
+            TMath::Pi()/4,                           // Theta inside π/6–π/3
+            0.0, 0.0, 0.0, 0.0                      // Const, Ax, Ay, Cxy
+        };
+        f2->SetParameters(initParams);
 
-        print(f"Angle {angle}° done. E1+E2={E_sum:.2f} keV, deviation={deviation:.2f} keV, "
-              f"chi2={chi2_val:.2f}, reduced chi2={reduced_chi2:.2f}")
+        // --- Set parameter limits ---
+        f2->SetParLimits(0, 0.0, 10*h2->GetMaximum());  // Amp1
+        f2->SetParLimits(1, 0.0, 10*h2->GetMaximum());  // Amp2
+        f2->SetParLimits(2, xCenter - 1.5*xRMS, xCenter + 1.5*xRMS); // X0
+        f2->SetParLimits(3, yCenter - 1.5*yRMS, yCenter + 1.5*yRMS); // Y0
+        f2->SetParLimits(4, 0.01, 2.0*xRMS); // SigmaX1
+        f2->SetParLimits(5, 0.01, 2.0*yRMS); // SigmaY1
+        f2->SetParLimits(6, 0.01, 3.0*xRMS); // SigmaX2
+        f2->SetParLimits(7, 0.01, 3.0*yRMS); // SigmaY2
+        f2->SetParLimits(8, TMath::Pi()/6, TMath::Pi()/3); // Theta
 
-        # Save histogram and overlay CB surface
-        out_root = ROOT.TFile(os.path.join(out_dir, f"coinc_{angle}.root"), "RECREATE")
-        h2.SetDirectory(out_root)
-        h2.Write()
+        // --- Draw histogram + fit box ---
+        TCanvas *c = new TCanvas("c", h2->GetName(), 800, 600);
+        h2->Draw("COLZ");
 
-        npoints = 50
-        x_vals = np.linspace(x_min, x_max, npoints)
-        y_vals = np.linspace(y_min, y_max, npoints)
-        g2 = ROOT.TGraph2D()
-        idx = 0
-        for xi in x_vals:
-            for yi in y_vals:
-                g2.SetPoint(idx, xi, yi, cb2d_linear_manual((xi, yi), fitted_params))
-                idx += 1
+        TBox *box = new TBox(xmin, ymin, xmax, ymax);
+        box->SetLineColor(kRed);
+        box->SetLineWidth(2);
+        box->SetFillStyle(0);
+        box->Draw();
 
-        c = ROOT.TCanvas(f"c_{angle}", "", 800, 600)
-        h2.Draw("COLZ")
-        g2.SetLineColor(ROOT.kRed)
-        g2.SetLineWidth(2)
-        g2.Draw("SAME SURF1")
-        c.SaveAs(os.path.join(out_dir, f"coinc_{angle}.png"))
-        out_root.Close()
+        // --- Fit ---
+        h2->Fit(f2, "R"); // Fit in range only
+
+        f2->SetLineColor(kBlue);
+        f2->Draw("SAME");
+        c->Update();
+
+        // --- Save results ---
+        fout << h2->GetName();
+        for (int i=0; i<13; i++) {
+            fout << "  " << f2->GetParameter(i) << "  " << f2->GetParError(i);
+        }
+        fout << "  " << f2->GetChisquare() << "  " << f2->GetNDF() << "\n";
+
+        // --- Save canvas ---
+        TString safeName = h2->GetName();
+        safeName.ReplaceAll("/", "_");
+        TString outpng = TString("../output/") + safeName + "_fit.png";
+        c->SaveAs(outpng);
+
+        delete f2;
+        delete c;
+    }
+
+    fout.close();
+    f->Close();
+    std::cout <<"Results written to " << outdat << std::endl;
+
+    return 0;
+}

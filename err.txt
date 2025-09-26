@@ -1,0 +1,821 @@
+qassem.awayies@Qassems-MacBook-Air compton-npac % root -l fit_2D_gauss.C
+root [0] 
+Processing fit_2D_gauss.C...
+[#1] INFO:Fitting -- RooAbsPdf::fitTo(model) fixing normalization set for coefficient determination to observables in data
+[#1] INFO:Fitting -- using generic CPU library compiled with no vectorizations
+[#1] INFO:Fitting -- Creation of NLL object took 5.10938 ms
+[#1] INFO:Fitting -- RooAddition::defaultErrorLevel(nll_model_dataHist) Summation contains a RooNLLVar, using its error level
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: activating const optimization
+Minuit2Minimizer: Minimize with max-calls 3500 convergence for edm < 1 strategy 1
+Info in <Minuit2>: MnSeedGenerator Computing seed using NumericalGradient calculator
+Info in <Minuit2>: MnSeedGenerator Evaluated function and gradient in 77.208 μs
+Info in <Minuit2>: MnSeedGenerator Initial state: FCN =       431713.9117 Edm =       137704439.8 NCalls =     29
+Info in <Minuit2>: NegativeG2LineSearch Doing a NegativeG2LineSearch since one of the G2 component is negative
+Info in <Minuit2>: NegativeG2LineSearch Done after 31.667 μs
+Info in <Minuit2>: MnSeedGenerator Negative G2 found - new state: 
+  Minimum value : 422905.8806
+  Edm           : 41679.57988
+  Internal parameters:	[     -0.927295218    -0.5235987756 -3.330669074e-16  2.220446049e-16     -1.550795993 -5.523440882e-05    -0.6208660176]	
+  Internal gradient  :	[                0      -53198.9429      -12256.9921      14552.14484                0      13270.83076      -1629.70979]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  3.3382187e-05              0              0              0              0              0]
+ [              0              0  7.3633235e-05              0              0              0              0]
+ [              0              0              0  0.00021072751              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  9.3675588e-05              0]
+ [              0              0              0              0              0              0  2.1801018e-05]]]
+Info in <Minuit2>: MnSeedGenerator Initial state  
+  Minimum value : 422905.8806
+  Edm           : 41679.57988
+  Internal parameters:	[     -0.927295218    -0.5235987756 -3.330669074e-16  2.220446049e-16     -1.550795993 -5.523440882e-05    -0.6208660176]	
+  Internal gradient  :	[                0      -53198.9429      -12256.9921      14552.14484                0      13270.83076      -1629.70979]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  3.3382187e-05              0              0              0              0              0]
+ [              0              0  7.3633235e-05              0              0              0              0]
+ [              0              0              0  0.00021072751              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  9.3675588e-05              0]
+ [              0              0              0              0              0              0  2.1801018e-05]]]
+Info in <Minuit2>: VariableMetricBuilder Start iterating until Edm is < 0.001 with call limit = 3500
+Info in <Minuit2>: VariableMetricBuilder    0 - FCN =       422905.8806 Edm =       41679.57988 NCalls =     56
+Info in <Minuit2>: VariableMetricBuilder    1 - FCN =       381923.7388 Edm =       125623.8868 NCalls =     79
+Info in <Minuit2>: VariableMetricBuilder    2 - FCN =       369158.0263 Edm =        16664.2348 NCalls =    102
+Info in <Minuit2>: VariableMetricBuilder    3 - FCN =        351635.741 Edm =       27206.45948 NCalls =    125
+Info in <Minuit2>: VariableMetricBuilder    4 - FCN =        350750.039 Edm =       7655.175364 NCalls =    141
+Info in <Minuit2>: VariableMetricBuilder    5 - FCN =       346208.3024 Edm =        4533.84466 NCalls =    157
+Info in <Minuit2>: VariableMetricBuilder    6 - FCN =       342925.3385 Edm =       1361.054732 NCalls =    173
+Info in <Minuit2>: VariableMetricBuilder    7 - FCN =       340334.5279 Edm =       501.8532157 NCalls =    189
+Info in <Minuit2>: VariableMetricBuilder    8 - FCN =        339834.563 Edm =       44.52897483 NCalls =    205
+Info in <Minuit2>: VariableMetricBuilder    9 - FCN =       339784.0783 Edm =       9.052159187 NCalls =    221
+Info in <Minuit2>: VariableMetricBuilder   10 - FCN =        339776.423 Edm =       1.527120709 NCalls =    237
+Info in <Minuit2>: VariableMetricBuilder   11 - FCN =       339775.0256 Edm =     0.01078965869 NCalls =    253
+Info in <Minuit2>: VariableMetricBuilder   12 - FCN =       339775.0149 Edm =   7.088469974e-05 NCalls =    268
+Info in <Minuit2>: VariableMetricBuilder Stop iterating after 266.833 μs
+Minuit2Minimizer : Valid minimum - status = 0
+FVAL  = 339775.01494130824
+Edm   = 7.08846997360393827e-05
+Nfcn  = 268
+amp	  = 741	 +/-  1870.59	(limited)
+bkg_frac	  = 0.2	 +/-  2.2045e-06	(limited)
+muX	  = 466.633	 +/-  0.323771	(limited)
+muY	  = 56.6722	 +/-  9.0278e-05	(limited)
+p0	  = 0.1	 +/-  229.803	(limited)
+sigmaX	  = 56.3876	 +/-  0.22968	(limited)
+sigmaY	  = 6.6721	 +/-  0.0260181	(limited)
+Info in <Minuit2>: Minuit2Minimizer::Hesse Using max-calls 3500
+Warning in <Minuit2>: MnHesse 2nd derivative zero for parameter amp ; MnHesse fails and will return diagonal matrix
+Info in <Minuit2>: MnHesse Done after 9.083 μs
+Warning in <Minuit2>: Minuit2Minimizer::Hesse Hesse failed - matrix is full but not positive defined
+Warning in <Minuit2>: Minuit2Minimizer::Hesse 3
+[#0] ERROR:Minimization -- RooMinimizer::calculateHessErrors() Error when calculating Hessian
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: deactivating const optimization
+Angle 0 done.
+[#1] INFO:Fitting -- RooAbsPdf::fitTo(model) fixing normalization set for coefficient determination to observables in data
+[#1] INFO:Fitting -- Creation of NLL object took 164.25 μs
+[#1] INFO:Fitting -- RooAddition::defaultErrorLevel(nll_model_dataHist) Summation contains a RooNLLVar, using its error level
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: activating const optimization
+Minuit2Minimizer: Minimize with max-calls 3500 convergence for edm < 1 strategy 1
+Info in <Minuit2>: MnSeedGenerator Computing seed using NumericalGradient calculator
+Info in <Minuit2>: MnSeedGenerator Evaluated function and gradient in 38.833 μs
+Info in <Minuit2>: MnSeedGenerator Initial state: FCN =       100925.8448 Edm =       8549267.658 NCalls =     29
+Info in <Minuit2>: NegativeG2LineSearch Doing a NegativeG2LineSearch since one of the G2 component is negative
+Info in <Minuit2>: NegativeG2LineSearch Done after 30.709 μs
+Info in <Minuit2>: MnSeedGenerator Negative G2 found - new state: 
+  Minimum value : 98230.13858
+  Edm           : 9766.17222
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -5.965399359e-05    -0.6435738844]	
+  Internal gradient  :	[                0     -12523.51453     -3157.132511      3317.893549                0       3130.36572      1965.587172]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  0.00014109445              0              0              0              0              0]
+ [              0              0  0.00026956808              0              0              0              0]
+ [              0              0              0  0.00087954099              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0   0.0003993163              0]
+ [              0              0              0              0              0              0  0.00016912288]]]
+Info in <Minuit2>: MnSeedGenerator Initial state  
+  Minimum value : 98230.13858
+  Edm           : 9766.17222
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -5.965399359e-05    -0.6435738844]	
+  Internal gradient  :	[                0     -12523.51453     -3157.132511      3317.893549                0       3130.36572      1965.587172]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  0.00014109445              0              0              0              0              0]
+ [              0              0  0.00026956808              0              0              0              0]
+ [              0              0              0  0.00087954099              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0   0.0003993163              0]
+ [              0              0              0              0              0              0  0.00016912288]]]
+Info in <Minuit2>: VariableMetricBuilder Start iterating until Edm is < 0.001 with call limit = 3500
+Info in <Minuit2>: VariableMetricBuilder    0 - FCN =       98230.13858 Edm =        9766.17222 NCalls =     58
+Info in <Minuit2>: VariableMetricBuilder    1 - FCN =        86111.1284 Edm =       27678.35503 NCalls =     82
+Info in <Minuit2>: VariableMetricBuilder    2 - FCN =       84362.65136 Edm =       6632.331925 NCalls =     98
+Info in <Minuit2>: VariableMetricBuilder    3 - FCN =       80424.91753 Edm =       7121.249993 NCalls =    119
+Info in <Minuit2>: VariableMetricBuilder    4 - FCN =       79018.47823 Edm =       2402.506292 NCalls =    135
+Info in <Minuit2>: VariableMetricBuilder    5 - FCN =       78109.33967 Edm =       791.9524268 NCalls =    151
+Info in <Minuit2>: VariableMetricBuilder    6 - FCN =       77460.53115 Edm =       438.0775109 NCalls =    167
+Info in <Minuit2>: VariableMetricBuilder    7 - FCN =        77273.0654 Edm =       72.13040219 NCalls =    183
+Info in <Minuit2>: VariableMetricBuilder    8 - FCN =       77133.14123 Edm =       10.71299624 NCalls =    199
+Info in <Minuit2>: VariableMetricBuilder    9 - FCN =       77120.90292 Edm =      0.9071419088 NCalls =    215
+Info in <Minuit2>: VariableMetricBuilder   10 - FCN =       77119.27988 Edm =      0.4096157135 NCalls =    231
+Info in <Minuit2>: VariableMetricBuilder   11 - FCN =       77118.37764 Edm =     0.01318726057 NCalls =    247
+Info in <Minuit2>: VariableMetricBuilder   12 - FCN =        77118.3642 Edm =   4.620430195e-06 NCalls =    262
+Info in <Minuit2>: VariableMetricBuilder Stop iterating after 299.042 μs
+Minuit2Minimizer : Valid minimum - status = 0
+FVAL  = 77118.3641984924034
+Edm   = 4.62043019547986047e-06
+Nfcn  = 262
+amp	  = 194	 +/-  489.736	(limited)
+bkg_frac	  = 0.2	 +/-  1.39719e-05	(limited)
+muX	  = 462.822	 +/-  0.607077	(limited)
+muY	  = 55.2357	 +/-  0.000358036	(limited)
+p0	  = 0.1	 +/-  229.803	(limited)
+sigmaX	  = 51.7826	 +/-  0.428418	(limited)
+sigmaY	  = 5.23572	 +/-  0.0433643	(limited)
+Info in <Minuit2>: Minuit2Minimizer::Hesse Using max-calls 3500
+Warning in <Minuit2>: MnHesse 2nd derivative zero for parameter amp ; MnHesse fails and will return diagonal matrix
+Info in <Minuit2>: MnHesse Done after 5.583 μs
+Warning in <Minuit2>: Minuit2Minimizer::Hesse Hesse failed - matrix is full but not positive defined
+Warning in <Minuit2>: Minuit2Minimizer::Hesse 3
+[#0] ERROR:Minimization -- RooMinimizer::calculateHessErrors() Error when calculating Hessian
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: deactivating const optimization
+Angle 15 done.
+[#1] INFO:Fitting -- RooAbsPdf::fitTo(model) fixing normalization set for coefficient determination to observables in data
+[#1] INFO:Fitting -- Creation of NLL object took 179 μs
+[#1] INFO:Fitting -- RooAddition::defaultErrorLevel(nll_model_dataHist) Summation contains a RooNLLVar, using its error level
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: activating const optimization
+Minuit2Minimizer: Minimize with max-calls 3500 convergence for edm < 1 strategy 1
+Info in <Minuit2>: MnSeedGenerator Computing seed using NumericalGradient calculator
+Info in <Minuit2>: MnSeedGenerator Evaluated function and gradient in 42.792 μs
+Info in <Minuit2>: MnSeedGenerator Initial state: FCN =       135957.3972 Edm =       16223.83852 NCalls =     29
+Info in <Minuit2>: NegativeG2LineSearch Doing a NegativeG2LineSearch since one of the G2 component is negative
+Info in <Minuit2>: NegativeG2LineSearch Done after 1.625 μs
+Info in <Minuit2>: MnSeedGenerator Negative G2 found - new state: 
+  Minimum value : 135957.3972
+  Edm           : 16223.83852
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -6.205491233e-05 -7.751626764e-05]	
+  Internal gradient  :	[                0     -16897.69976     -4057.934803      1266.145085                0      3580.387978      3720.615304]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  0.00010423608              0              0              0              0              0]
+ [              0              0  0.00021092432              0              0              0              0]
+ [              0              0              0   0.0043536235              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  0.00023340469              0]
+ [              0              0              0              0              0              0   0.0015667065]]]
+Info in <Minuit2>: MnSeedGenerator Initial state  
+  Minimum value : 135957.3972
+  Edm           : 16223.83852
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -6.205491233e-05 -7.751626764e-05]	
+  Internal gradient  :	[                0     -16897.69976     -4057.934803      1266.145085                0      3580.387978      3720.615304]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  0.00010423608              0              0              0              0              0]
+ [              0              0  0.00021092432              0              0              0              0]
+ [              0              0              0   0.0043536235              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  0.00023340469              0]
+ [              0              0              0              0              0              0   0.0015667065]]]
+Info in <Minuit2>: VariableMetricBuilder Start iterating until Edm is < 0.001 with call limit = 3500
+Info in <Minuit2>: VariableMetricBuilder    0 - FCN =       135957.3972 Edm =       16223.83852 NCalls =     29
+Info in <Minuit2>: VariableMetricBuilder    1 - FCN =       123061.6148 Edm =        8338.70745 NCalls =     59
+Info in <Minuit2>: VariableMetricBuilder    2 - FCN =       122530.8425 Edm =        3505.53124 NCalls =     75
+Info in <Minuit2>: VariableMetricBuilder    3 - FCN =       120698.5224 Edm =       1532.179087 NCalls =     93
+Info in <Minuit2>: VariableMetricBuilder    4 - FCN =       119316.1667 Edm =       3098.372288 NCalls =    114
+Info in <Minuit2>: VariableMetricBuilder    5 - FCN =         118319.43 Edm =       410.1013838 NCalls =    133
+Info in <Minuit2>: VariableMetricBuilder    6 - FCN =       117875.4766 Edm =         55.189764 NCalls =    151
+Info in <Minuit2>: VariableMetricBuilder    7 - FCN =       117830.6666 Edm =       3.946389413 NCalls =    167
+Info in <Minuit2>: VariableMetricBuilder    8 - FCN =       117826.6623 Edm =      0.2359931995 NCalls =    183
+Info in <Minuit2>: VariableMetricBuilder    9 - FCN =       117826.4783 Edm =     0.01338556974 NCalls =    199
+Info in <Minuit2>: VariableMetricBuilder   10 - FCN =       117826.4645 Edm =   6.872246686e-05 NCalls =    215
+Info in <Minuit2>: VariableMetricBuilder Stop iterating after 226.125 μs
+Minuit2Minimizer : Valid minimum - status = 0
+FVAL  = 117826.464452553089
+Edm   = 6.87224668631043794e-05
+Nfcn  = 215
+amp	  = 149	 +/-  376.138	(limited)
+bkg_frac	  = 0.2	 +/-  9.46722e-06	(limited)
+muX	  = 433.826	 +/-  0.558835	(limited)
+muY	  = 66.5071	 +/-  0.0105852	(limited)
+p0	  = 0.1	 +/-  229.803	(limited)
+sigmaX	  = 54.5804	 +/-  0.391599	(limited)
+sigmaY	  = 36.4654	 +/-  0.323762	(limited)
+Info in <Minuit2>: Minuit2Minimizer::Hesse Using max-calls 3500
+Warning in <Minuit2>: MnHesse 2nd derivative zero for parameter amp ; MnHesse fails and will return diagonal matrix
+Info in <Minuit2>: MnHesse Done after 5.5 μs
+Warning in <Minuit2>: Minuit2Minimizer::Hesse Hesse failed - matrix is full but not positive defined
+Warning in <Minuit2>: Minuit2Minimizer::Hesse 3
+[#0] ERROR:Minimization -- RooMinimizer::calculateHessErrors() Error when calculating Hessian
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: deactivating const optimization
+Angle 30 done.
+[#1] INFO:Fitting -- RooAbsPdf::fitTo(model) fixing normalization set for coefficient determination to observables in data
+[#1] INFO:Fitting -- Creation of NLL object took 147.375 μs
+[#1] INFO:Fitting -- RooAddition::defaultErrorLevel(nll_model_dataHist) Summation contains a RooNLLVar, using its error level
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: activating const optimization
+Minuit2Minimizer: Minimize with max-calls 3500 convergence for edm < 1 strategy 1
+Info in <Minuit2>: MnSeedGenerator Computing seed using NumericalGradient calculator
+Info in <Minuit2>: MnSeedGenerator Evaluated function and gradient in 36.25 μs
+Info in <Minuit2>: MnSeedGenerator Initial state: FCN =       284210.7152 Edm =       22749.24237 NCalls =     29
+Info in <Minuit2>: NegativeG2LineSearch Doing a NegativeG2LineSearch since one of the G2 component is negative
+Info in <Minuit2>: NegativeG2LineSearch Done after 1.084 μs
+Info in <Minuit2>: MnSeedGenerator Negative G2 found - new state: 
+  Minimum value : 284210.7152
+  Edm           : 22749.24237
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993  -5.94959056e-05 -7.377899176e-05]	
+  Internal gradient  :	[                0     -34643.67867     -6357.322804      3231.332156                0      8557.093428       3572.76242]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  5.0994347e-05              0              0              0              0              0]
+ [              0              0  0.00013725479              0              0              0              0]
+ [              0              0              0   0.0011745785              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0    0.000140944              0]
+ [              0              0              0              0              0              0  0.00013022593]]]
+Info in <Minuit2>: MnSeedGenerator Initial state  
+  Minimum value : 284210.7152
+  Edm           : 22749.24237
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993  -5.94959056e-05 -7.377899176e-05]	
+  Internal gradient  :	[                0     -34643.67867     -6357.322804      3231.332156                0      8557.093428       3572.76242]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  5.0994347e-05              0              0              0              0              0]
+ [              0              0  0.00013725479              0              0              0              0]
+ [              0              0              0   0.0011745785              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0    0.000140944              0]
+ [              0              0              0              0              0              0  0.00013022593]]]
+Info in <Minuit2>: VariableMetricBuilder Start iterating until Edm is < 0.001 with call limit = 3500
+Info in <Minuit2>: VariableMetricBuilder    0 - FCN =       284210.7152 Edm =       22749.24237 NCalls =     29
+Info in <Minuit2>: VariableMetricBuilder    1 - FCN =       261197.2879 Edm =       57208.58081 NCalls =     52
+Info in <Minuit2>: VariableMetricBuilder    2 - FCN =       254435.9511 Edm =       3710.762388 NCalls =     75
+Info in <Minuit2>: VariableMetricBuilder    3 - FCN =       251118.6794 Edm =       1538.505857 NCalls =     97
+Info in <Minuit2>: VariableMetricBuilder    4 - FCN =       249325.7302 Edm =       283.6413699 NCalls =    116
+Info in <Minuit2>: VariableMetricBuilder    5 - FCN =       249065.1283 Edm =       26.17123362 NCalls =    132
+Info in <Minuit2>: VariableMetricBuilder    6 - FCN =        249042.265 Edm =       2.598942389 NCalls =    148
+Info in <Minuit2>: VariableMetricBuilder    7 - FCN =        249039.608 Edm =      0.3373599639 NCalls =    164
+Info in <Minuit2>: VariableMetricBuilder    8 - FCN =       249039.3591 Edm =     0.01687281708 NCalls =    180
+Info in <Minuit2>: VariableMetricBuilder    9 - FCN =       249039.3387 Edm =   2.276723757e-05 NCalls =    196
+Info in <Minuit2>: VariableMetricBuilder Stop iterating after 203.667 μs
+Minuit2Minimizer : Valid minimum - status = 0
+FVAL  = 249039.338744198758
+Edm   = 2.27672375686754666e-05
+Nfcn  = 196
+amp	  = 238	 +/-  600.81	(limited)
+bkg_frac	  = 0.2	 +/-  4.95085e-06	(limited)
+muX	  = 391.72	 +/-  0.395021	(limited)
+muY	  = 88.5843	 +/-  0.00741256	(limited)
+p0	  = 0.1	 +/-  229.803	(limited)
+sigmaX	  = 55.3565	 +/-  0.280636	(limited)
+sigmaY	  = 52.3627	 +/-  0.321293	(limited)
+Info in <Minuit2>: Minuit2Minimizer::Hesse Using max-calls 3500
+Warning in <Minuit2>: MnHesse 2nd derivative zero for parameter amp ; MnHesse fails and will return diagonal matrix
+Info in <Minuit2>: MnHesse Done after 5.291 μs
+Warning in <Minuit2>: Minuit2Minimizer::Hesse Hesse failed - matrix is full but not positive defined
+Warning in <Minuit2>: Minuit2Minimizer::Hesse 3
+[#0] ERROR:Minimization -- RooMinimizer::calculateHessErrors() Error when calculating Hessian
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: deactivating const optimization
+Angle 45 done.
+[#1] INFO:Fitting -- RooAbsPdf::fitTo(model) fixing normalization set for coefficient determination to observables in data
+[#1] INFO:Fitting -- Creation of NLL object took 136.833 μs
+[#1] INFO:Fitting -- RooAddition::defaultErrorLevel(nll_model_dataHist) Summation contains a RooNLLVar, using its error level
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: activating const optimization
+Minuit2Minimizer: Minimize with max-calls 3500 convergence for edm < 1 strategy 1
+Info in <Minuit2>: MnSeedGenerator Computing seed using NumericalGradient calculator
+Info in <Minuit2>: MnSeedGenerator Evaluated function and gradient in 36.125 μs
+Info in <Minuit2>: MnSeedGenerator Initial state: FCN =       122019.6024 Edm =       9006.023031 NCalls =     29
+Info in <Minuit2>: NegativeG2LineSearch Doing a NegativeG2LineSearch since one of the G2 component is negative
+Info in <Minuit2>: NegativeG2LineSearch Done after 1.041 μs
+Info in <Minuit2>: MnSeedGenerator Negative G2 found - new state: 
+  Minimum value : 122019.6024
+  Edm           : 9006.023031
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -5.894760308e-05 -7.172775023e-05]	
+  Internal gradient  :	[                0     -14711.08165     -2023.449915      1225.865938                0      3629.855644      1994.551448]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  0.00012091634              0              0              0              0              0]
+ [              0              0  0.00041900608              0              0              0              0]
+ [              0              0              0   0.0015666054              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  0.00034421235              0]
+ [              0              0              0              0              0              0  0.00031441354]]]
+Info in <Minuit2>: MnSeedGenerator Initial state  
+  Minimum value : 122019.6024
+  Edm           : 9006.023031
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -5.894760308e-05 -7.172775023e-05]	
+  Internal gradient  :	[                0     -14711.08165     -2023.449915      1225.865938                0      3629.855644      1994.551448]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  0.00012091634              0              0              0              0              0]
+ [              0              0  0.00041900608              0              0              0              0]
+ [              0              0              0   0.0015666054              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  0.00034421235              0]
+ [              0              0              0              0              0              0  0.00031441354]]]
+Info in <Minuit2>: VariableMetricBuilder Start iterating until Edm is < 0.001 with call limit = 3500
+Info in <Minuit2>: VariableMetricBuilder    0 - FCN =       122019.6024 Edm =       9006.023031 NCalls =     29
+Info in <Minuit2>: VariableMetricBuilder    1 - FCN =       113265.4426 Edm =       11701.39152 NCalls =     55
+Info in <Minuit2>: VariableMetricBuilder    2 - FCN =       110207.4764 Edm =       2931.221417 NCalls =     80
+Info in <Minuit2>: VariableMetricBuilder    3 - FCN =       109267.8296 Edm =       678.3306472 NCalls =    101
+Info in <Minuit2>: VariableMetricBuilder    4 - FCN =        107984.766 Edm =       54.22205057 NCalls =    126
+Info in <Minuit2>: VariableMetricBuilder    5 - FCN =        107919.855 Edm =       8.291202422 NCalls =    142
+Info in <Minuit2>: VariableMetricBuilder    6 - FCN =       107910.7704 Edm =        4.18472027 NCalls =    158
+Info in <Minuit2>: VariableMetricBuilder    7 - FCN =       107898.4529 Edm =       3.726281308 NCalls =    178
+Info in <Minuit2>: VariableMetricBuilder    8 - FCN =       107895.2537 Edm =       1.131673946 NCalls =    194
+Info in <Minuit2>: VariableMetricBuilder    9 - FCN =       107894.6676 Edm =     0.07644743722 NCalls =    210
+Info in <Minuit2>: VariableMetricBuilder   10 - FCN =       107894.5995 Edm =    0.005565223163 NCalls =    225
+Info in <Minuit2>: VariableMetricBuilder   11 - FCN =       107894.5951 Edm =   7.005409023e-06 NCalls =    241
+Info in <Minuit2>: VariableMetricBuilder Stop iterating after 285.583 μs
+Minuit2Minimizer : Valid minimum - status = 0
+FVAL  = 107894.595115048418
+Edm   = 7.00540902324721683e-06
+Nfcn  = 241
+amp	  = 103	 +/-  260.015	(limited)
+bkg_frac	  = 0.2	 +/-  1.17514e-05	(limited)
+muX	  = 348.368	 +/-  0.634323	(limited)
+muY	  = 120.659	 +/-  0.632018	(limited)
+p0	  = 0.1	 +/-  229.803	(limited)
+sigmaX	  = 58.5667	 +/-  0.454455	(limited)
+sigmaY	  = 55.3133	 +/-  0.503424	(limited)
+Info in <Minuit2>: Minuit2Minimizer::Hesse Using max-calls 3500
+Warning in <Minuit2>: MnHesse 2nd derivative zero for parameter amp ; MnHesse fails and will return diagonal matrix
+Info in <Minuit2>: MnHesse Done after 5.209 μs
+Warning in <Minuit2>: Minuit2Minimizer::Hesse Hesse failed - matrix is full but not positive defined
+Warning in <Minuit2>: Minuit2Minimizer::Hesse 3
+[#0] ERROR:Minimization -- RooMinimizer::calculateHessErrors() Error when calculating Hessian
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: deactivating const optimization
+Angle 60 done.
+[#1] INFO:Fitting -- RooAbsPdf::fitTo(model) fixing normalization set for coefficient determination to observables in data
+[#1] INFO:Fitting -- Creation of NLL object took 126.125 μs
+[#1] INFO:Fitting -- RooAddition::defaultErrorLevel(nll_model_dataHist) Summation contains a RooNLLVar, using its error level
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: activating const optimization
+Minuit2Minimizer: Minimize with max-calls 3500 convergence for edm < 1 strategy 1
+Info in <Minuit2>: MnSeedGenerator Computing seed using NumericalGradient calculator
+Info in <Minuit2>: MnSeedGenerator Evaluated function and gradient in 30.125 μs
+Info in <Minuit2>: MnSeedGenerator Initial state: FCN =       160801.3826 Edm =       21923.89532 NCalls =     29
+Info in <Minuit2>: NegativeG2LineSearch Doing a NegativeG2LineSearch since one of the G2 component is negative
+Info in <Minuit2>: NegativeG2LineSearch Done after 1.458 μs
+Info in <Minuit2>: MnSeedGenerator Negative G2 found - new state: 
+  Minimum value : 160801.3826
+  Edm           : 21923.89532
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -5.655262309e-05 -6.448437894e-05]	
+  Internal gradient  :	[                0     -19425.77274     -2057.812077      1275.999624                0      6179.841694      5108.126576]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  9.1258287e-05              0              0              0              0              0]
+ [              0              0  0.00048603597              0              0              0              0]
+ [              0              0              0  0.00081389125              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  0.00083184009              0]
+ [              0              0              0              0              0              0  0.00069392797]]]
+Info in <Minuit2>: MnSeedGenerator Initial state  
+  Minimum value : 160801.3826
+  Edm           : 21923.89532
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -5.655262309e-05 -6.448437894e-05]	
+  Internal gradient  :	[                0     -19425.77274     -2057.812077      1275.999624                0      6179.841694      5108.126576]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  9.1258287e-05              0              0              0              0              0]
+ [              0              0  0.00048603597              0              0              0              0]
+ [              0              0              0  0.00081389125              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  0.00083184009              0]
+ [              0              0              0              0              0              0  0.00069392797]]]
+Info in <Minuit2>: VariableMetricBuilder Start iterating until Edm is < 0.001 with call limit = 3500
+Info in <Minuit2>: VariableMetricBuilder    0 - FCN =       160801.3826 Edm =       21923.89532 NCalls =     29
+Info in <Minuit2>: VariableMetricBuilder    1 - FCN =        155508.434 Edm =       84252.06215 NCalls =     53
+Info in <Minuit2>: VariableMetricBuilder    2 - FCN =       152572.2864 Edm =       47941.01198 NCalls =     73
+Info in <Minuit2>: VariableMetricBuilder    3 - FCN =       145345.3228 Edm =       1758.683194 NCalls =     95
+Info in <Minuit2>: VariableMetricBuilder    4 - FCN =       142259.7999 Edm =       1308.285055 NCalls =    117
+Info in <Minuit2>: VariableMetricBuilder    5 - FCN =       140867.6361 Edm =       121.3451183 NCalls =    140
+Info in <Minuit2>: VariableMetricBuilder    6 - FCN =       140754.6904 Edm =       17.28148083 NCalls =    157
+Info in <Minuit2>: VariableMetricBuilder    7 - FCN =        140734.615 Edm =        1.68247983 NCalls =    173
+Info in <Minuit2>: VariableMetricBuilder    8 - FCN =       140733.4343 Edm =      0.1465443694 NCalls =    189
+Info in <Minuit2>: VariableMetricBuilder    9 - FCN =       140733.1529 Edm =    0.008714986914 NCalls =    205
+Info in <Minuit2>: VariableMetricBuilder   10 - FCN =       140733.1472 Edm =    0.000139165158 NCalls =    221
+Info in <Minuit2>: VariableMetricBuilder Stop iterating after 228.917 μs
+Minuit2Minimizer : Valid minimum - status = 0
+FVAL  = 140733.147221757012
+Edm   = 0.000139165157998957247
+Nfcn  = 221
+amp	  = 155	 +/-  391.284	(limited)
+bkg_frac	  = 0.2	 +/-  8.88131e-06	(limited)
+muX	  = 297.502	 +/-  0.496144	(limited)
+muY	  = 170.97	 +/-  0.506715	(limited)
+p0	  = 0.1	 +/-  229.803	(limited)
+sigmaX	  = 51.8841	 +/-  0.366378	(limited)
+sigmaY	  = 52.0495	 +/-  0.37888	(limited)
+Info in <Minuit2>: Minuit2Minimizer::Hesse Using max-calls 3500
+Warning in <Minuit2>: MnHesse 2nd derivative zero for parameter amp ; MnHesse fails and will return diagonal matrix
+Info in <Minuit2>: MnHesse Done after 5.375 μs
+Warning in <Minuit2>: Minuit2Minimizer::Hesse Hesse failed - matrix is full but not positive defined
+Warning in <Minuit2>: Minuit2Minimizer::Hesse 3
+[#0] ERROR:Minimization -- RooMinimizer::calculateHessErrors() Error when calculating Hessian
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: deactivating const optimization
+Angle 75 done.
+[#1] INFO:Fitting -- RooAbsPdf::fitTo(model) fixing normalization set for coefficient determination to observables in data
+[#1] INFO:Fitting -- Creation of NLL object took 144.5 μs
+[#1] INFO:Fitting -- RooAddition::defaultErrorLevel(nll_model_dataHist) Summation contains a RooNLLVar, using its error level
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: activating const optimization
+Minuit2Minimizer: Minimize with max-calls 3500 convergence for edm < 1 strategy 1
+Info in <Minuit2>: MnSeedGenerator Computing seed using NumericalGradient calculator
+Info in <Minuit2>: MnSeedGenerator Evaluated function and gradient in 33.667 μs
+Info in <Minuit2>: MnSeedGenerator Initial state: FCN =       322952.9244 Edm =       31699.27136 NCalls =     29
+Info in <Minuit2>: NegativeG2LineSearch Doing a NegativeG2LineSearch since one of the G2 component is negative
+Info in <Minuit2>: NegativeG2LineSearch Done after 1.292 μs
+Info in <Minuit2>: MnSeedGenerator Negative G2 found - new state: 
+  Minimum value : 322952.9244
+  Edm           : 31699.27136
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -5.928871061e-05 -6.371328034e-05]	
+  Internal gradient  :	[                0     -39003.40281     -2731.887794      808.1815163                0      10348.42081      10924.91179]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  4.5453237e-05              0              0              0              0              0]
+ [              0              0  0.00028394877              0              0              0              0]
+ [              0              0              0  0.00030548451              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  0.00020597142              0]
+ [              0              0              0              0              0              0  0.00027878907]]]
+Info in <Minuit2>: MnSeedGenerator Initial state  
+  Minimum value : 322952.9244
+  Edm           : 31699.27136
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -5.928871061e-05 -6.371328034e-05]	
+  Internal gradient  :	[                0     -39003.40281     -2731.887794      808.1815163                0      10348.42081      10924.91179]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  4.5453237e-05              0              0              0              0              0]
+ [              0              0  0.00028394877              0              0              0              0]
+ [              0              0              0  0.00030548451              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  0.00020597142              0]
+ [              0              0              0              0              0              0  0.00027878907]]]
+Info in <Minuit2>: VariableMetricBuilder Start iterating until Edm is < 0.001 with call limit = 3500
+Info in <Minuit2>: VariableMetricBuilder    0 - FCN =       322952.9244 Edm =       31699.27136 NCalls =     29
+Info in <Minuit2>: VariableMetricBuilder    1 - FCN =       312616.4151 Edm =       14753.27025 NCalls =     51
+Info in <Minuit2>: VariableMetricBuilder    2 - FCN =       302749.0245 Edm =       31839.66865 NCalls =     71
+Info in <Minuit2>: VariableMetricBuilder    3 - FCN =       291427.8778 Edm =       7862.030879 NCalls =     93
+Info in <Minuit2>: VariableMetricBuilder    4 - FCN =       288584.4901 Edm =       1358.303016 NCalls =    114
+Info in <Minuit2>: VariableMetricBuilder    5 - FCN =       286364.3811 Edm =       193.2812846 NCalls =    135
+Info in <Minuit2>: VariableMetricBuilder    6 - FCN =       286212.9587 Edm =       45.40217611 NCalls =    151
+Info in <Minuit2>: VariableMetricBuilder    7 - FCN =       286184.6256 Edm =       1.845459506 NCalls =    167
+Info in <Minuit2>: VariableMetricBuilder    8 - FCN =       286182.8914 Edm =      0.2274025021 NCalls =    182
+Info in <Minuit2>: VariableMetricBuilder    9 - FCN =       286182.7236 Edm =    0.002778104511 NCalls =    198
+Info in <Minuit2>: VariableMetricBuilder   10 - FCN =       286182.7207 Edm =   3.740134772e-05 NCalls =    213
+Info in <Minuit2>: VariableMetricBuilder Stop iterating after 219.958 μs
+Minuit2Minimizer : Valid minimum - status = 0
+FVAL  = 286182.720707690518
+Edm   = 3.74013477221941406e-05
+Nfcn  = 213
+amp	  = 307	 +/-  774.995	(limited)
+bkg_frac	  = 0.2	 +/-  4.23836e-06	(limited)
+muX	  = 258.503	 +/-  0.389676	(limited)
+muY	  = 210.803	 +/-  0.357626	(limited)
+p0	  = 0.1	 +/-  229.803	(limited)
+sigmaX	  = 58.0193	 +/-  0.273649	(limited)
+sigmaY	  = 54.697	 +/-  0.257683	(limited)
+Info in <Minuit2>: Minuit2Minimizer::Hesse Using max-calls 3500
+Warning in <Minuit2>: MnHesse 2nd derivative zero for parameter amp ; MnHesse fails and will return diagonal matrix
+Info in <Minuit2>: MnHesse Done after 5.208 μs
+Warning in <Minuit2>: Minuit2Minimizer::Hesse Hesse failed - matrix is full but not positive defined
+Warning in <Minuit2>: Minuit2Minimizer::Hesse 3
+[#0] ERROR:Minimization -- RooMinimizer::calculateHessErrors() Error when calculating Hessian
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: deactivating const optimization
+Angle 90 done.
+[#1] INFO:Fitting -- RooAbsPdf::fitTo(model) fixing normalization set for coefficient determination to observables in data
+[#1] INFO:Fitting -- Creation of NLL object took 132.834 μs
+[#1] INFO:Fitting -- RooAddition::defaultErrorLevel(nll_model_dataHist) Summation contains a RooNLLVar, using its error level
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: activating const optimization
+Minuit2Minimizer: Minimize with max-calls 3500 convergence for edm < 1 strategy 1
+Info in <Minuit2>: MnSeedGenerator Computing seed using NumericalGradient calculator
+Info in <Minuit2>: MnSeedGenerator Evaluated function and gradient in 30.958 μs
+Info in <Minuit2>: MnSeedGenerator Initial state: FCN =       82021.75619 Edm =       10402.07874 NCalls =     29
+Info in <Minuit2>: NegativeG2LineSearch Doing a NegativeG2LineSearch since one of the G2 component is negative
+Info in <Minuit2>: NegativeG2LineSearch Done after 1.334 μs
+Info in <Minuit2>: MnSeedGenerator Negative G2 found - new state: 
+  Minimum value : 82021.75619
+  Edm           : 10402.07874
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993  -6.42977636e-05 -6.324463745e-05]	
+  Internal gradient  :	[                0     -9994.965603     -323.6517777      223.1490434                0      2805.017474      3155.383437]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  0.00017704701              0              0              0              0              0]
+ [              0              0   0.0011446731              0              0              0              0]
+ [              0              0              0  0.00097793307              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0    0.001044314              0]
+ [              0              0              0              0              0              0   0.0015604007]]]
+Info in <Minuit2>: MnSeedGenerator Initial state  
+  Minimum value : 82021.75619
+  Edm           : 10402.07874
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993  -6.42977636e-05 -6.324463745e-05]	
+  Internal gradient  :	[                0     -9994.965603     -323.6517777      223.1490434                0      2805.017474      3155.383437]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  0.00017704701              0              0              0              0              0]
+ [              0              0   0.0011446731              0              0              0              0]
+ [              0              0              0  0.00097793307              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0    0.001044314              0]
+ [              0              0              0              0              0              0   0.0015604007]]]
+Info in <Minuit2>: VariableMetricBuilder Start iterating until Edm is < 0.001 with call limit = 3500
+Info in <Minuit2>: VariableMetricBuilder    0 - FCN =       82021.75619 Edm =       10402.07874 NCalls =     29
+Info in <Minuit2>: VariableMetricBuilder    1 - FCN =       79486.15839 Edm =       22539.31063 NCalls =     53
+Info in <Minuit2>: VariableMetricBuilder    2 - FCN =        78353.8121 Edm =       5435.912459 NCalls =     71
+Info in <Minuit2>: VariableMetricBuilder    3 - FCN =       74622.75218 Edm =       951.3464316 NCalls =     92
+Info in <Minuit2>: VariableMetricBuilder    4 - FCN =       72621.59078 Edm =       50.06375974 NCalls =    112
+Info in <Minuit2>: VariableMetricBuilder    5 - FCN =       72583.30914 Edm =       12.00174233 NCalls =    128
+Info in <Minuit2>: VariableMetricBuilder    6 - FCN =        72570.2566 Edm =       2.073310914 NCalls =    144
+Info in <Minuit2>: VariableMetricBuilder    7 - FCN =       72568.26084 Edm =     0.02187634199 NCalls =    160
+Info in <Minuit2>: VariableMetricBuilder    8 - FCN =       72568.24595 Edm =     0.00567483875 NCalls =    176
+Info in <Minuit2>: VariableMetricBuilder    9 - FCN =       72568.24149 Edm =   4.885147486e-05 NCalls =    191
+Info in <Minuit2>: VariableMetricBuilder Stop iterating after 227.25 μs
+Minuit2Minimizer : Valid minimum - status = 0
+FVAL  = 72568.2414927255886
+Edm   = 4.88514748646450461e-05
+Nfcn  = 191
+amp	  = 90	 +/-  227.197	(limited)
+bkg_frac	  = 0.2	 +/-  1.70468e-05	(limited)
+muX	  = 226.096	 +/-  0.712786	(limited)
+muY	  = 233.169	 +/-  0.692587	(limited)
+p0	  = 0.1	 +/-  229.803	(limited)
+sigmaX	  = 53.9801	 +/-  0.497584	(limited)
+sigmaY	  = 52.3083	 +/-  0.509981	(limited)
+Info in <Minuit2>: Minuit2Minimizer::Hesse Using max-calls 3500
+Warning in <Minuit2>: MnHesse 2nd derivative zero for parameter amp ; MnHesse fails and will return diagonal matrix
+Info in <Minuit2>: MnHesse Done after 6.083 μs
+Warning in <Minuit2>: Minuit2Minimizer::Hesse Hesse failed - matrix is full but not positive defined
+Warning in <Minuit2>: Minuit2Minimizer::Hesse 3
+[#0] ERROR:Minimization -- RooMinimizer::calculateHessErrors() Error when calculating Hessian
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: deactivating const optimization
+Angle 105 done.
+[#1] INFO:Fitting -- RooAbsPdf::fitTo(model) fixing normalization set for coefficient determination to observables in data
+[#1] INFO:Fitting -- Creation of NLL object took 188.959 μs
+[#1] INFO:Fitting -- RooAddition::defaultErrorLevel(nll_model_dataHist) Summation contains a RooNLLVar, using its error level
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: activating const optimization
+Minuit2Minimizer: Minimize with max-calls 3500 convergence for edm < 1 strategy 1
+Info in <Minuit2>: MnSeedGenerator Computing seed using NumericalGradient calculator
+Info in <Minuit2>: MnSeedGenerator Evaluated function and gradient in 43.166 μs
+Info in <Minuit2>: MnSeedGenerator Initial state: FCN =       149858.3104 Edm =       16755.90234 NCalls =     29
+Info in <Minuit2>: NegativeG2LineSearch Doing a NegativeG2LineSearch since one of the G2 component is negative
+Info in <Minuit2>: NegativeG2LineSearch Done after 1.708 μs
+Info in <Minuit2>: MnSeedGenerator Negative G2 found - new state: 
+  Minimum value : 149858.3104
+  Edm           : 16755.90234
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -7.576981525e-05 -6.339022811e-05]	
+  Internal gradient  :	[                0     -18409.93817     -478.4008686      1028.083554                0      3405.001416      6088.208304]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  9.5888426e-05              0              0              0              0              0]
+ [              0              0  0.00061451193              0              0              0              0]
+ [              0              0              0  0.00040721727              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  0.00022602065              0]
+ [              0              0              0              0              0              0  0.00084532361]]]
+Info in <Minuit2>: MnSeedGenerator Initial state  
+  Minimum value : 149858.3104
+  Edm           : 16755.90234
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -7.576981525e-05 -6.339022811e-05]	
+  Internal gradient  :	[                0     -18409.93817     -478.4008686      1028.083554                0      3405.001416      6088.208304]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  9.5888426e-05              0              0              0              0              0]
+ [              0              0  0.00061451193              0              0              0              0]
+ [              0              0              0  0.00040721727              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  0.00022602065              0]
+ [              0              0              0              0              0              0  0.00084532361]]]
+Info in <Minuit2>: VariableMetricBuilder Start iterating until Edm is < 0.001 with call limit = 3500
+Info in <Minuit2>: VariableMetricBuilder    0 - FCN =       149858.3104 Edm =       16755.90234 NCalls =     29
+Info in <Minuit2>: VariableMetricBuilder    1 - FCN =       137739.1804 Edm =       12169.75934 NCalls =     62
+Info in <Minuit2>: VariableMetricBuilder    2 - FCN =       135451.3861 Edm =       2200.702438 NCalls =     85
+Info in <Minuit2>: VariableMetricBuilder    3 - FCN =        135192.527 Edm =       2392.837149 NCalls =    104
+Info in <Minuit2>: VariableMetricBuilder    4 - FCN =       133007.0037 Edm =       266.4417873 NCalls =    121
+Info in <Minuit2>: VariableMetricBuilder    5 - FCN =       132867.8659 Edm =       24.50800485 NCalls =    137
+Info in <Minuit2>: VariableMetricBuilder    6 - FCN =       132840.9091 Edm =       1.222518688 NCalls =    153
+Info in <Minuit2>: VariableMetricBuilder    7 - FCN =       132839.7465 Edm =     0.07876740801 NCalls =    168
+Info in <Minuit2>: VariableMetricBuilder    8 - FCN =       132839.6808 Edm =     0.00159427978 NCalls =    184
+Info in <Minuit2>: VariableMetricBuilder    9 - FCN =       132839.6793 Edm =   3.756278178e-06 NCalls =    199
+Info in <Minuit2>: VariableMetricBuilder Stop iterating after 207.375 μs
+Minuit2Minimizer : Valid minimum - status = 0
+FVAL  = 132839.679255175957
+Edm   = 3.75627817766465518e-06
+Nfcn  = 199
+amp	  = 209	 +/-  527.602	(limited)
+bkg_frac	  = 0.2	 +/-  9.2652e-06	(limited)
+muX	  = 191.46	 +/-  0.517906	(limited)
+muY	  = 258.523	 +/-  0.493406	(limited)
+p0	  = 0.1	 +/-  229.803	(limited)
+sigmaX	  = 53.3111	 +/-  0.378059	(limited)
+sigmaY	  = 50.173	 +/-  0.344476	(limited)
+Info in <Minuit2>: Minuit2Minimizer::Hesse Using max-calls 3500
+Warning in <Minuit2>: MnHesse 2nd derivative zero for parameter amp ; MnHesse fails and will return diagonal matrix
+Info in <Minuit2>: MnHesse Done after 5.667 μs
+Warning in <Minuit2>: Minuit2Minimizer::Hesse Hesse failed - matrix is full but not positive defined
+Warning in <Minuit2>: Minuit2Minimizer::Hesse 3
+[#0] ERROR:Minimization -- RooMinimizer::calculateHessErrors() Error when calculating Hessian
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: deactivating const optimization
+Angle 120 done.
+[#1] INFO:Fitting -- RooAbsPdf::fitTo(model) fixing normalization set for coefficient determination to observables in data
+[#1] INFO:Fitting -- Creation of NLL object took 150.875 μs
+[#1] INFO:Fitting -- RooAddition::defaultErrorLevel(nll_model_dataHist) Summation contains a RooNLLVar, using its error level
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: activating const optimization
+Minuit2Minimizer: Minimize with max-calls 3500 convergence for edm < 1 strategy 1
+Info in <Minuit2>: MnSeedGenerator Computing seed using NumericalGradient calculator
+Info in <Minuit2>: MnSeedGenerator Evaluated function and gradient in 36.5 μs
+Info in <Minuit2>: MnSeedGenerator Initial state: FCN =        69837.5876 Edm =       22502.78033 NCalls =     29
+Info in <Minuit2>: NegativeG2LineSearch Doing a NegativeG2LineSearch since one of the G2 component is negative
+Info in <Minuit2>: NegativeG2LineSearch Done after 1.125 μs
+Info in <Minuit2>: MnSeedGenerator Negative G2 found - new state: 
+  Minimum value : 69837.5876
+  Edm           : 22502.78033
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -7.044166533e-05 -5.671013701e-05]	
+  Internal gradient  :	[                0     -8516.385407       301.168237      134.0720357                0      2180.277443       3012.03818]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  0.00020748447              0              0              0              0              0]
+ [              0              0   0.0014239213              0              0              0              0]
+ [              0              0              0    0.001062045              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  0.00094194693              0]
+ [              0              0              0              0              0              0   0.0077528358]]]
+Info in <Minuit2>: MnSeedGenerator Initial state  
+  Minimum value : 69837.5876
+  Edm           : 22502.78033
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -7.044166533e-05 -5.671013701e-05]	
+  Internal gradient  :	[                0     -8516.385407       301.168237      134.0720357                0      2180.277443       3012.03818]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  0.00020748447              0              0              0              0              0]
+ [              0              0   0.0014239213              0              0              0              0]
+ [              0              0              0    0.001062045              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  0.00094194693              0]
+ [              0              0              0              0              0              0   0.0077528358]]]
+Info in <Minuit2>: VariableMetricBuilder Start iterating until Edm is < 0.001 with call limit = 3500
+Info in <Minuit2>: VariableMetricBuilder    0 - FCN =        69837.5876 Edm =       22502.78033 NCalls =     29
+Info in <Minuit2>: VariableMetricBuilder    1 - FCN =       66579.51324 Edm =       36819.08894 NCalls =     62
+Info in <Minuit2>: VariableMetricBuilder    2 - FCN =       66394.44106 Edm =       5995.651105 NCalls =     81
+Info in <Minuit2>: VariableMetricBuilder    3 - FCN =        64387.4932 Edm =       1196.509912 NCalls =    107
+Info in <Minuit2>: VariableMetricBuilder    4 - FCN =        61829.7751 Edm =       179.4669183 NCalls =    128
+Info in <Minuit2>: VariableMetricBuilder    5 - FCN =       61723.73076 Edm =       59.99385198 NCalls =    144
+Info in <Minuit2>: VariableMetricBuilder    6 - FCN =       61685.59645 Edm =       12.29338552 NCalls =    160
+Info in <Minuit2>: VariableMetricBuilder    7 - FCN =       61669.30468 Edm =       3.159650072 NCalls =    176
+Info in <Minuit2>: VariableMetricBuilder    8 - FCN =       61666.24208 Edm =       0.618133826 NCalls =    191
+Info in <Minuit2>: VariableMetricBuilder    9 - FCN =       61665.64131 Edm =    0.002069520742 NCalls =    207
+Info in <Minuit2>: VariableMetricBuilder   10 - FCN =       61665.63896 Edm =    2.56891524e-05 NCalls =    223
+Info in <Minuit2>: VariableMetricBuilder Stop iterating after 257.875 μs
+Minuit2Minimizer : Valid minimum - status = 0
+FVAL  = 61665.6389581644762
+Edm   = 2.56891524016172296e-05
+Nfcn  = 223
+amp	  = 101	 +/-  254.966	(limited)
+bkg_frac	  = 0.2	 +/-  2.057e-05	(limited)
+muX	  = 185.865	 +/-  0.740847	(limited)
+muY	  = 271.427	 +/-  0.734957	(limited)
+p0	  = 0.1	 +/-  229.803	(limited)
+sigmaX	  = 51.2551	 +/-  0.535087	(limited)
+sigmaY	  = 54.1237	 +/-  0.546395	(limited)
+Info in <Minuit2>: Minuit2Minimizer::Hesse Using max-calls 3500
+Warning in <Minuit2>: MnHesse 2nd derivative zero for parameter amp ; MnHesse fails and will return diagonal matrix
+Info in <Minuit2>: MnHesse Done after 5.583 μs
+Warning in <Minuit2>: Minuit2Minimizer::Hesse Hesse failed - matrix is full but not positive defined
+Warning in <Minuit2>: Minuit2Minimizer::Hesse 3
+[#0] ERROR:Minimization -- RooMinimizer::calculateHessErrors() Error when calculating Hessian
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: deactivating const optimization
+Angle 135 done.
+[#1] INFO:Fitting -- RooAbsPdf::fitTo(model) fixing normalization set for coefficient determination to observables in data
+[#1] INFO:Fitting -- Creation of NLL object took 179.792 μs
+[#1] INFO:Fitting -- RooAddition::defaultErrorLevel(nll_model_dataHist) Summation contains a RooNLLVar, using its error level
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: activating const optimization
+Minuit2Minimizer: Minimize with max-calls 3500 convergence for edm < 1 strategy 1
+Info in <Minuit2>: MnSeedGenerator Computing seed using NumericalGradient calculator
+Info in <Minuit2>: MnSeedGenerator Evaluated function and gradient in 41.125 μs
+Info in <Minuit2>: MnSeedGenerator Initial state: FCN =       255344.8345 Edm =       88291479.19 NCalls =     29
+Info in <Minuit2>: NegativeG2LineSearch Doing a NegativeG2LineSearch since one of the G2 component is negative
+Info in <Minuit2>: NegativeG2LineSearch Done after 30.083 μs
+Info in <Minuit2>: MnSeedGenerator Negative G2 found - new state: 
+  Minimum value : 248581.9284
+  Edm           : 32170.96682
+  Internal parameters:	[     -0.927295218    -0.5235987756                0 -2.220446049e-16     -1.550795993 -5.904390554e-05    -0.5793905164]	
+  Internal gradient  :	[                0     -30441.75375      1101.652771      3596.105124                0      8349.410461      43.11311488]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  5.8101125e-05              0              0              0              0              0]
+ [              0              0  0.00062983314              0              0              0              0]
+ [              0              0              0  8.6847265e-05              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0   0.0010464958              0]
+ [              0              0              0              0              0              0  1.7986065e-05]]]
+Info in <Minuit2>: MnSeedGenerator Initial state  
+  Minimum value : 248581.9284
+  Edm           : 32170.96682
+  Internal parameters:	[     -0.927295218    -0.5235987756                0 -2.220446049e-16     -1.550795993 -5.904390554e-05    -0.5793905164]	
+  Internal gradient  :	[                0     -30441.75375      1101.652771      3596.105124                0      8349.410461      43.11311488]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  5.8101125e-05              0              0              0              0              0]
+ [              0              0  0.00062983314              0              0              0              0]
+ [              0              0              0  8.6847265e-05              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0   0.0010464958              0]
+ [              0              0              0              0              0              0  1.7986065e-05]]]
+Info in <Minuit2>: VariableMetricBuilder Start iterating until Edm is < 0.001 with call limit = 3500
+Info in <Minuit2>: VariableMetricBuilder    0 - FCN =       248581.9284 Edm =       32170.96682 NCalls =     56
+Info in <Minuit2>: VariableMetricBuilder    1 - FCN =        233522.078 Edm =       19360.90567 NCalls =     78
+Info in <Minuit2>: VariableMetricBuilder    2 - FCN =       232206.5403 Edm =       6702.938169 NCalls =     96
+Info in <Minuit2>: VariableMetricBuilder    3 - FCN =       227218.3517 Edm =       5990.254341 NCalls =    116
+Info in <Minuit2>: VariableMetricBuilder    4 - FCN =       222067.9643 Edm =       425.8171584 NCalls =    137
+Info in <Minuit2>: VariableMetricBuilder    5 - FCN =       221658.8678 Edm =       73.62413166 NCalls =    153
+Info in <Minuit2>: VariableMetricBuilder    6 - FCN =       221598.8537 Edm =       3.781617606 NCalls =    168
+Info in <Minuit2>: VariableMetricBuilder    7 - FCN =       221594.9211 Edm =      0.1099339839 NCalls =    184
+Info in <Minuit2>: VariableMetricBuilder    8 - FCN =       221594.8217 Edm =   0.0004190722187 NCalls =    200
+Info in <Minuit2>: VariableMetricBuilder Stop iterating after 177.042 μs
+Minuit2Minimizer : Valid minimum - status = 0
+FVAL  = 221594.821676459513
+Edm   = 0.000419072218710871396
+Nfcn  = 200
+amp	  = 245	 +/-  618.481	(limited)
+bkg_frac	  = 0.2	 +/-  5.63327e-06	(limited)
+muX	  = 179.03	 +/-  0.439715	(limited)
+muY	  = 290.689	 +/-  0.385582	(limited)
+p0	  = 0.1	 +/-  229.803	(limited)
+sigmaX	  = 56.3112	 +/-  0.314648	(limited)
+sigmaY	  = 51.058	 +/-  0.284614	(limited)
+Info in <Minuit2>: Minuit2Minimizer::Hesse Using max-calls 3500
+Warning in <Minuit2>: MnHesse 2nd derivative zero for parameter amp ; MnHesse fails and will return diagonal matrix
+Info in <Minuit2>: MnHesse Done after 5.125 μs
+Warning in <Minuit2>: Minuit2Minimizer::Hesse Hesse failed - matrix is full but not positive defined
+Warning in <Minuit2>: Minuit2Minimizer::Hesse 3
+[#0] ERROR:Minimization -- RooMinimizer::calculateHessErrors() Error when calculating Hessian
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: deactivating const optimization
+Angle 150 done.
+[#1] INFO:Fitting -- RooAbsPdf::fitTo(model) fixing normalization set for coefficient determination to observables in data
+[#1] INFO:Fitting -- Creation of NLL object took 140.667 μs
+[#1] INFO:Fitting -- RooAddition::defaultErrorLevel(nll_model_dataHist) Summation contains a RooNLLVar, using its error level
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: activating const optimization
+Minuit2Minimizer: Minimize with max-calls 3500 convergence for edm < 1 strategy 1
+Info in <Minuit2>: MnSeedGenerator Computing seed using NumericalGradient calculator
+Info in <Minuit2>: MnSeedGenerator Evaluated function and gradient in 31.209 μs
+Info in <Minuit2>: MnSeedGenerator Initial state: FCN =       1188991.119 Edm =       111081.3363 NCalls =     33
+Info in <Minuit2>: NegativeG2LineSearch Doing a NegativeG2LineSearch since one of the G2 component is negative
+Info in <Minuit2>: NegativeG2LineSearch Done after 1.167 μs
+Info in <Minuit2>: MnSeedGenerator Negative G2 found - new state: 
+  Minimum value : 1188991.119
+  Edm           : 111081.3363
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -8.573343935e-05 -6.430616008e-05]	
+  Internal gradient  :	[                0     -142913.2539      25635.60882     -63602.65544                0     -15094.47146      12789.34283]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  1.2416399e-05              0              0              0              0              0]
+ [              0              0   0.0001716465              0              0              0              0]
+ [              0              0              0  1.7930153e-05              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  1.2193538e-05              0]
+ [              0              0              0              0              0              0  1.5993006e-05]]]
+Info in <Minuit2>: MnSeedGenerator Initial state  
+  Minimum value : 1188991.119
+  Edm           : 111081.3363
+  Internal parameters:	[     -0.927295218    -0.5235987756                0                0     -1.550795993 -8.573343935e-05 -6.430616008e-05]	
+  Internal gradient  :	[                0     -142913.2539      25635.60882     -63602.65544                0     -15094.47146      12789.34283]	
+  Internal covariance matrix:
+[[              2              0              0              0              0              0              0]
+ [              0  1.2416399e-05              0              0              0              0              0]
+ [              0              0   0.0001716465              0              0              0              0]
+ [              0              0              0  1.7930153e-05              0              0              0]
+ [              0              0              0              0              2              0              0]
+ [              0              0              0              0              0  1.2193538e-05              0]
+ [              0              0              0              0              0              0  1.5993006e-05]]]
+Info in <Minuit2>: VariableMetricBuilder Start iterating until Edm is < 0.001 with call limit = 3500
+Info in <Minuit2>: VariableMetricBuilder    0 - FCN =       1188991.119 Edm =       111081.3363 NCalls =     33
+Info in <Minuit2>: VariableMetricBuilder    1 - FCN =       1062865.455 Edm =       25715.48976 NCalls =     54
+Info in <Minuit2>: VariableMetricBuilder    2 - FCN =       1036893.171 Edm =       35981.19619 NCalls =     73
+Info in <Minuit2>: VariableMetricBuilder    3 - FCN =       1026270.622 Edm =       2826.571443 NCalls =     92
+Info in <Minuit2>: VariableMetricBuilder    4 - FCN =       1022654.902 Edm =         813.11003 NCalls =    111
+Info in <Minuit2>: VariableMetricBuilder    5 - FCN =       1022137.436 Edm =       33.12801388 NCalls =    127
+Info in <Minuit2>: VariableMetricBuilder    6 - FCN =       1022104.365 Edm =       2.437497619 NCalls =    142
+Info in <Minuit2>: VariableMetricBuilder    7 - FCN =       1022101.543 Edm =     0.01396457282 NCalls =    158
+Info in <Minuit2>: VariableMetricBuilder    8 - FCN =       1022101.529 Edm =    0.000558741511 NCalls =    173
+Info in <Minuit2>: VariableMetricBuilder Stop iterating after 146.583 μs
+Minuit2Minimizer : Valid minimum - status = 0
+FVAL  = 1022101.5288656787
+Edm   = 0.000558741510951458412
+Nfcn  = 173
+amp	  = 2243	 +/-  5662.26	(limited)
+bkg_frac	  = 0.2	 +/-  1.06243e-06	(limited)
+muX	  = 93.9713	 +/-  0.00072707	(limited)
+muY	  = 507.58	 +/-  0.173483	(limited)
+p0	  = 0.1	 +/-  229.803	(limited)
+sigmaX	  = 51.0234	 +/-  0.142455	(limited)
+sigmaY	  = 50.0797	 +/-  0.113226	(limited)
+Info in <Minuit2>: Minuit2Minimizer::Hesse Using max-calls 3500
+Warning in <Minuit2>: MnHesse 2nd derivative zero for parameter amp ; MnHesse fails and will return diagonal matrix
+Info in <Minuit2>: MnHesse Done after 3.875 μs
+Warning in <Minuit2>: Minuit2Minimizer::Hesse Hesse failed - matrix is full but not positive defined
+Warning in <Minuit2>: Minuit2Minimizer::Hesse 3
+[#0] ERROR:Minimization -- RooMinimizer::calculateHessErrors() Error when calculating Hessian
+[#1] INFO:Minimization -- RooAbsMinimizerFcn::setOptimizeConst: deactivating const optimization
+Angle 165 done.
+Fit results saved to fit_results.dat
+root [1] 
+
