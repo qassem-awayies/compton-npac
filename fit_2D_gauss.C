@@ -11,7 +11,7 @@
 #include <iostream>
 
 void fit_2D_gauss() {
-    TFile* f = TFile::Open("./output/histogram_data.root");
+    TFile* f = TFile::Open("./output-2ndRun/histogram_data.root");
     if(!f || f->IsZombie()) { std::cout << "Error opening ROOT file!\n"; return; }
 
     TTree* metadata = (TTree*)f->Get("metadata");
