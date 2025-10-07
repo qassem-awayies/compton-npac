@@ -12,10 +12,16 @@
 
 void fit_2D_gauss() {
     TFile* f = TFile::Open("./output/histogram_data_1274.root");
-    if(!f || f->IsZombie()) { std::cout << "Error opening ROOT file!\n"; return; }
+    if(!f || f->IsZombie()) { 
+        std::cout << "Error opening ROOT file!\n"; 
+        return; 
+    }
 
     TTree* metadata = (TTree*)f->Get("metadata");
-    if(!metadata) { std::cout << "metadata not found!\n"; return; }
+    if(!metadata) { 
+        std::cout << "metadata not found!\n"; 
+        return; 
+    }
 
     int angle;
     double mu_x_guess, mu_y_guess, sigma_x_guess, sigma_y_guess, maximum;
@@ -37,7 +43,10 @@ void fit_2D_gauss() {
         metadata->GetEntry(i);
         std::string tree_name = "bins_" + std::to_string(angle);
         TTree* binTree = (TTree*)f->Get(tree_name.c_str());
-        if(!binTree) { std::cout << "No tree for angle " << angle << "\n"; continue; }
+        if(!binTree) { 
+            std::cout << "No tree for angle " << angle << "\n"; 
+            continue; 
+        }
 
         double x, y, h;
         binTree->SetBranchAddress("x", &x);
@@ -46,6 +55,7 @@ void fit_2D_gauss() {
 
         RooRealVar X("X","X",0,10000);
         RooRealVar Y("Y","Y",0,10000);
+
         RooDataHist dataHist("dataHist","dataHist",RooArgList(X,Y));
 
         int nBins = binTree->GetEntries();
@@ -73,15 +83,52 @@ void fit_2D_gauss() {
 
         // --- Constant background ---
         RooRealVar p0("p0","background constant",0.1,0,1000);
-        RooGenericPdf bkg2D("bkg2D","bkg2D","p0",RooArgList(p0));
+        RooGenericPdf bkg2D("bkg2D","bkg2D","p0 + 0*X + 0*Y", RooArgList(p0,X,Y));
 
-        RooRealVar bkg_frac("bkg_frac","bkg fraction",0.05,0.0,0.2); // constrain fraction
+        RooRealVar bkg_frac("bkg_frac","bkg fraction",0.05,0.0,0.2);
         RooAddPdf model("model","signal + background",RooArgList(gauss2D_ext,bkg2D),RooArgList(bkg_frac));
 
-        RooFitResult* result = model.fitTo(dataHist,RooFit::Save());
+        RooFitResult* result = nullptr;
 
-        out << angle << " ";
-        out << muX.getVal() << " " << muX.getError() << " "
+        // =============================================================
+        // Special handling for angle 165°: crop data and constrain parameters
+        // =============================================================
+        if(angle == 165) {
+            double exp_muX = 348.0;
+            double exp_muY = 926.0;
+
+            // Create a cropped RooDataHist
+            RooDataHist dataHistSubset("dataHistSubset","dataHistSubset",RooArgList(X,Y));
+            for(int j=0; j<nBins; ++j) {
+                binTree->GetEntry(j);
+                if(x > exp_muX - 100 && x < exp_muX + 100 &&
+                   y > exp_muY - 100 && y < exp_muY + 100){
+                    for(int k=0; k<(int)h; ++k){
+                        X = x; Y = y;
+                        dataHistSubset.add(RooArgSet(X,Y));
+                    }
+                }
+            }
+
+            // Constrain parameters near expected values
+            muX.setVal(exp_muX); muX.setRange(exp_muX-30, exp_muX+30);
+            muY.setVal(exp_muY); muY.setRange(exp_muY-30, exp_muY+30);
+            sigmaX.setVal(20); sigmaX.setRange(5,60);
+            sigmaY.setVal(20); sigmaY.setRange(5,60);
+            amp.setVal(maximum); amp.setRange(0.5*maximum,2*maximum);
+
+            // Reduce background fraction in cropped region
+            bkg_frac.setVal(0.05); bkg_frac.setRange(0.0,0.1);
+
+            // Fit only the cropped histogram
+            result = model.fitTo(dataHistSubset, RooFit::Save(), RooFit::PrintLevel(-1));
+        } else {
+            // Regular fit for other angles
+            result = model.fitTo(dataHist, RooFit::Save(), RooFit::PrintLevel(-1));
+        }
+
+        out << angle << " "
+            << muX.getVal() << " " << muX.getError() << " "
             << sigmaX.getVal() << " " << sigmaX.getError() << " "
             << muY.getVal() << " " << muY.getError() << " "
             << sigmaY.getVal() << " " << sigmaY.getError() << " "
@@ -92,6 +139,5 @@ void fit_2D_gauss() {
 
     out.close();
     f->Close();
-    std::cout << "Fit results saved to fit_results.dat\n";
+    std::cout << "Fit results saved to fit_results_1274.dat\n";
 }
-
