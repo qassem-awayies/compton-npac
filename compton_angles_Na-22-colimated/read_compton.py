@@ -20,7 +20,7 @@ file_template = "compton_{angle}_Na-22-colimated.fast/compton_{angle}_Na-22-coli
 out_dir = "../output"
 os.makedirs(out_dir, exist_ok=True)
 
-histogram_data_file = os.path.join(out_dir, "histogram_data.root")
+histogram_data_file = os.path.join(out_dir, "histogram_data_1274.root")
 box_size = 20
 
 # ------------------------
@@ -44,7 +44,7 @@ def build_histogram(file_path, nbins=200, e_max=2000):
                 E2_list.append(E)
         for E1 in E1_list:
             for E2 in E2_list:
-                if ((E1 + E2) > 1400.) or ( (E1+E2) < 1000.):
+                if ((E1 + E2) > 1400.) or ( (E1+E2) < 1100.):
                     continue
                 h2.Fill(E1, E2)
     return h2

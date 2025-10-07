@@ -11,7 +11,7 @@
 #include <iostream>
 
 void fit_2D_gauss() {
-    TFile* f = TFile::Open("./output-2ndRun/histogram_data.root");
+    TFile* f = TFile::Open("./output/histogram_data_1274.root");
     if(!f || f->IsZombie()) { std::cout << "Error opening ROOT file!\n"; return; }
 
     TTree* metadata = (TTree*)f->Get("metadata");
@@ -29,7 +29,7 @@ void fit_2D_gauss() {
     metadata->SetBranchAddress("maximum", &maximum);
     metadata->SetBranchAddress("n_bins", &n_bins);
 
-    std::ofstream out("fit_results.dat");
+    std::ofstream out("fit_results_1274.dat");
     out << "# angle muX muX_err sigmaX sigmaX_err muY muY_err sigmaY sigmaY_err amplitude amplitude_err\n";
 
     int n_entries = metadata->GetEntries();

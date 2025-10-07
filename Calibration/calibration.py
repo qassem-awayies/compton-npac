@@ -17,6 +17,10 @@ calibration_old = {
     2: lambda E: (E + 16.36) / 0.001628
 }
 
+# Errors
+err_q = 1414.21  # channel error
+err_E = 0.1      # energy error
+
 # Paths to your .fast files
 file_template = "./{source}.fast/{source}_0001.fast"
 
@@ -28,7 +32,7 @@ def get_peak_centroid(hist, peak_guess, window=20):
     bin_guess = hist.FindBin(peak_guess)
     start = max(1, bin_guess - window)
     end = min(hist.GetNbinsX(), bin_guess + window)
-    max_bin = int(start + np.argmax([hist.GetBinContent(i) for i in range(start, end+1)]))
+    max_bin = int(start + np.argmax([hist.GetBinContent(i) for i in range(start, end + 1)]))
     centroid = hist.GetBinCenter(max_bin)
     return centroid
 
@@ -36,7 +40,7 @@ def get_peak_centroid(hist, peak_guess, window=20):
 channels = {1: [], 2: []}
 energies = {1: [], 2: []}
 
-# Determine max_q across all files for optimal binning
+# Determine max_q across all files
 max_q = 0
 for source in sources:
     file_path = file_template.format(source=source)
@@ -53,7 +57,7 @@ for source in sources:
 
 print(f"Maximum q across all files: {max_q:.1f}")
 
-# Set number of bins for optimal binning
+# Number of bins for histograms
 nbins = 2000
 bin_width = max_q / nbins
 print(f"Using {nbins} bins → bin width = {bin_width:.1f}")
@@ -67,14 +71,12 @@ for source, gammas in sources.items():
     print(f"Processing source: {source}")
     reader = pyf.fastreader(file_path)
 
-    # Create histograms per detector
     hist_det = {}
     for det in [1, 2]:
         hist_det[det] = ROOT.TH1D(f"hist_{source}_det{det}",
                                   f"{source} Detector {det} channel histogram",
                                   nbins, 0, max_q)
 
-    # Fill histograms
     while reader.get_next_event():
         event = reader.get_event()
         for sub_event in event.sub_events:
@@ -82,7 +84,6 @@ for source, gammas in sources.items():
             if det_id in [1, 2]:
                 hist_det[det_id].Fill(sub_event.q)
 
-    # Extract centroids using old calibration for channel guess
     for det in [1, 2]:
         for E_gamma in gammas:
             q_guess = calibration_old[det](E_gamma)
@@ -91,73 +92,101 @@ for source, gammas in sources.items():
             channels[det].append(centroid_q)
             energies[det].append(E_gamma)
 
-        # Save histogram
         hist_det[det].SetDirectory(out_file)
         hist_det[det].Write()
 
-# Fit linear calibration per detector, plot, and annotate
+# Fit and plot
 calibration_tf1 = {}
 for det in [1, 2]:
     n_points = len(channels[det])
-    graph = ROOT.TGraph(n_points,
-                        np.array(channels[det], dtype=np.float64),
-                        np.array(energies[det], dtype=np.float64))
+    graph = ROOT.TGraphErrors(
+        n_points,
+        np.array(channels[det], dtype=np.float64),
+        np.array(energies[det], dtype=np.float64),
+        np.full(n_points, err_q, dtype=np.float64),
+        np.full(n_points, err_E, dtype=np.float64)
+    )
     graph.SetName(f"graph_cal_det{det}")
-    graph.SetTitle(f"Detector {det} calibration;Channel q;Energy keV")
+    graph.SetTitle("")  # no main title
     graph.SetMarkerStyle(20)
     graph.SetMarkerColor(ROOT.kBlue)
     graph.SetLineColor(ROOT.kRed)
     graph.SetLineWidth(2)
-    graph.SetMarkerSize(1.2)
+    graph.SetMarkerSize(1.0)
     graph.Write()
 
-    # Linear fit
     f_lin = ROOT.TF1(f"calibration_det{det}", "[0]*x + [1]", 0, max_q)
     f_lin.SetParameter(0, 0.0018)
     f_lin.SetParameter(1, -30)
-    graph.Fit(f_lin, "Q")  # Quiet fit
+    graph.Fit(f_lin, "Q")  # quiet fit
     calibration_tf1[det] = f_lin
     f_lin.Write()
 
-    print(f"\nDetector {det} calibration: E(q) = {f_lin.GetParameter(0):.6f} * q + {f_lin.GetParameter(1):.3f} keV")
-    print(f"  chi2/ndf = {f_lin.GetChisquare():.2f}/{f_lin.GetNDF()}")
+    slope = f_lin.GetParameter(0)
+    intercept = f_lin.GetParameter(1)
+    sigma_m = f_lin.GetParError(0)
+    sigma_b = f_lin.GetParError(1)
 
-    # Create canvas and plot
+    print(f"\nDetector {det} calibration: E(Channel) = {slope:.6f} ± {sigma_m:.6f} * Channel {intercept:+.3f} ± {sigma_b:.3f} keV")
+
+    # Canvas
     c = ROOT.TCanvas(f"c_cal_det{det}", f"Calibration Detector {det}", 800, 600)
     graph.Draw("AP")
     f_lin.Draw("same")
     c.SetGrid()
 
-    # Annotate points with source name and energy (dynamic offsets)
+    # Add X-axis and Y-axis margins
+    x_min = min(channels[det]) * 0.95
+    x_max = max(channels[det]) * 1.05
+    graph.GetXaxis().SetRangeUser(x_min, x_max)
+    ymin = min(energies[det]) * 0.85
+    ymax = max(energies[det]) * 1.20
+    graph.GetYaxis().SetRangeUser(ymin, ymax)
+
+    graph.GetXaxis().SetTitle("Channel")
+    graph.GetYaxis().SetTitle("Energy (keV)")
+
+    # Labels stacked above the fit line
     latex = ROOT.TLatex()
-    latex.SetTextSize(0.025)
+    latex.SetTextSize(0.022)
+    latex.SetTextFont(42)
     latex.SetTextColor(ROOT.kBlack)
 
+    points = []
     idx = 0
-    y_offsets = [0.02, 0.04, -0.02, -0.04]
-    x_offsets = [0.01, 0.015, -0.01, -0.015]
-
     for source, gammas in sources.items():
         for E_gamma in gammas:
-            q_val = channels[det][idx]
-            y_offset = y_offsets[idx % len(y_offsets)] * max(energies[det])
-            x_offset = x_offsets[idx % len(x_offsets)] * max_q
-            latex.DrawLatex(q_val + x_offset, E_gamma + y_offset, f"{source} {E_gamma} keV")
+            points.append((channels[det][idx], E_gamma, f"{source} {E_gamma} keV"))
             idx += 1
+    points.sort(key=lambda x: x[1])
+    
+    stacked_y = []
+    for q_val, E_gamma, label in points:
+        y_fit = f_lin.Eval(q_val)
+        y_label = y_fit + 20  # base offset above fit
+        for sy in stacked_y:
+            if abs(y_label - sy) < 10:
+                y_label += 10
+        latex.DrawLatex(q_val, y_label, label)
+        stacked_y.append(y_label)
 
-    # Annotate fit parameters and chi2
-    slope = f_lin.GetParameter(0)
-    intercept = f_lin.GetParameter(1)
-    chi2 = f_lin.GetChisquare()
-    ndf = f_lin.GetNDF()
-    latex.DrawLatex(0.05 * max_q, 0.9 * max(energies[det]),
-                    f"E(q) = {slope:.6f} * q + {intercept:.3f} keV")
-    latex.DrawLatex(0.05 * max_q, 0.85 * max(energies[det]),
-                    f"chi2/ndf = {chi2:.2f}/{ndf}")
+    # Legend for fit & points (taller, padded, no shadow)
+    legend = ROOT.TLegend(0.15, 0.78, 0.40, 0.88)
+    legend.SetFillColor(ROOT.kWhite)
+    legend.SetFillStyle(1001)   # solid fill, no shadow
+    legend.SetBorderSize(2)
+    legend.SetMargin(0.2)       # padding inside
+    legend.SetTextSize(0.020)
+    legend.SetTextFont(42)
+    legend.SetShadowColor(0)
+    legend.SetEntrySeparation(0.008)  # spacing between lines
+    legend.AddEntry(graph, "Measured calibration points", "P")
+    legend.AddEntry(f_lin, "Fitted calibration line", "L")
+    legend.Draw()
 
-    # Save annotated plot
-    c.SaveAs(f"calibration_detector_{det}.png")
+    # Save PDF
+    c.SaveAs(f"calibration_detector_{det}.pdf")
 
 out_file.Close()
-print("Calibration saved in calibration.root")
+print("Calibration saved in calibration.root and plots saved as PDF.")
 

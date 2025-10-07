@@ -20,7 +20,7 @@ double compton_energy(double E, double theta_deg) {
 void plotEvsAng() {
     gStyle->SetOptStat(0);
 
-    std::ifstream infile("fit_results.dat");
+    std::ifstream infile("./fit_results_1274.dat");
     if (!infile.is_open()) {
         std::cerr << "Error: could not open fit_results.dat\n";
         return;
@@ -72,9 +72,9 @@ void plotEvsAng() {
     for (int i = 0; i < ntheta; i++) {
         double theta = i;
         th_angle[i] = theta;
-        th_energy[i] = compton_energy(511.0, theta);
+        th_energy[i] = compton_energy(1274.0, theta);
         th_energy_err[i] = avg_sigma; // band width
-        th_loss[i] = 511.0 - th_energy[i];
+        th_loss[i] = 1274.0 - th_energy[i];
         th_loss_err[i] = avg_sigma;
     }
 
@@ -139,6 +139,6 @@ void plotEvsAng() {
     //leg->AddEntry(lineLoss, "511 - E_{#gamma}' (theory)", "l");
     leg->Draw();
 
-    c1->SaveAs("E_vs_angle.pdf");
+    c1->SaveAs("E_vs_angle_1274.pdf");
 }
 
