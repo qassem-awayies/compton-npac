@@ -50,8 +50,8 @@ void plotEvsAng() {
     gX->SetMarkerStyle(20);
     gX->SetMarkerColor(kBlue);
     gX->SetLineColor(kBlue);
-    gX->SetTitle("MuX, MuY vs Angle;Angle (deg);Energy (keV)");
-
+    gX->SetTitle(";Angle (deg);Energy (keV)");
+   // gX->GetYaxis()->SetRangeUser(-10,700);
     TGraphErrors *gY = new TGraphErrors(n, angle.data(), muy.data(), 0, muy_err.data());
     gY->SetMarkerStyle(21);
     gY->SetMarkerColor(kRed);
@@ -99,25 +99,44 @@ void plotEvsAng() {
     TGraph *lineLoss = new TGraph(ntheta, th_angle.data(), th_loss.data());
     lineLoss->SetLineColor(kMagenta+3);
     lineLoss->SetLineWidth(3);
+    // --- Define fit function for MuY ---
+    TF1 *fitLoss = new TF1("fitLoss",
+    [](double *x, double *p){
+        double theta = x[0] * M_PI/180.0; // convert deg to rad
+        double m = 511.0; // keV
+        double E = 511.0;
+        double arg =  theta;   // shifted/scaled angle
+        double val = (E / (1.0 + (E/m)*(1 - cos(arg))))+p[0];
+        return 511.0 - val;},
+    0, 180, 2);
+
+    // parameters: p0 = offset, p1 = scale
+    fitLoss->SetParNames("AngleOffset", "AngleScale");
+    fitLoss->SetParameters(0.0, 1.0);  // initial guesses
+
+    // Fit
+    //gY->Fit(fitLoss, "R"); // "R" restricts to range
+    fitLoss->SetLineColor(kBlack);
+    fitLoss->SetLineWidth(2);
 
     // --- Plot ---
-    TCanvas *c1 = new TCanvas("c1", "MuX, MuY and Compton vs Angle", 900, 700);
+    TCanvas *c1 = new TCanvas("c1", "E_{Meas}, E_{Meas} and Compton vs Angle", 900, 700);
 
-    bandCompton->Draw("A3");   // band
-    bandLoss->Draw("3 SAME");  // band
-    lineCompton->Draw("L SAME"); // central line
-    lineLoss->Draw("L SAME");   // central line
-    gX->Draw("P SAME");        // mux
-    gY->Draw("P SAME");        // muy
+    gX->Draw("AP SAME");        // mux
+   // gY->Draw("P SAME");        // muy
+    bandCompton->Draw("3 SAME");   // band
+   // bandLoss->Draw("3 SAME");  // band
+    lineCompton->Draw("L SAME");
+    //lineLoss->Draw("L SAME");   // central line
 
     // --- Legend ---
-    TLegend *leg = new TLegend(0.12, 0.7, 0.48, 0.88);
-    leg->AddEntry(gX, "mu_{x}", "p");
-    leg->AddEntry(gY, "mu_{y}", "p");
-    leg->AddEntry(bandCompton, "Compton E_{#gamma}' ± resolution", "lf");
-    leg->AddEntry(lineCompton, "Compton E_{#gamma}' (theory)", "l");
-    leg->AddEntry(bandLoss, "511 - E_{#gamma}' ± resolution", "lf");
-    leg->AddEntry(lineLoss, "511 - E_{#gamma}' (theory)", "l");
+    TLegend *leg = new TLegend(0.12, 0.7, 0.3, 0.88);
+    leg->AddEntry(gX, "E_{#gamma}' (Measured)", "p");
+   // leg->AddEntry(gY, "mu_{y}", "p");
+    leg->AddEntry(bandCompton, " E_{#gamma}'(Calculated) #pm resolution", "lf");
+    //leg->AddEntry(lineCompton, "E_{#gamma}' (calculated)", "l");
+    //leg->AddEntry(bandLoss, "511 - E_{#gamma}' ± resolution", "lf");
+    //leg->AddEntry(lineLoss, "511 - E_{#gamma}' (theory)", "l");
     leg->Draw();
 
     c1->SaveAs("E_vs_angle.pdf");

@@ -95,11 +95,13 @@ for source, gammas in sources.items():
         hist_det[det].SetDirectory(out_file)
         hist_det[det].Write()
 
-# Fit linear calibration per detector using ROOT and plot
+# Fit linear calibration per detector, plot, and annotate
 calibration_tf1 = {}
 for det in [1, 2]:
     n_points = len(channels[det])
-    graph = ROOT.TGraph(n_points, np.array(channels[det], dtype=np.float64), np.array(energies[det], dtype=np.float64))
+    graph = ROOT.TGraph(n_points,
+                        np.array(channels[det], dtype=np.float64),
+                        np.array(energies[det], dtype=np.float64))
     graph.SetName(f"graph_cal_det{det}")
     graph.SetTitle(f"Detector {det} calibration;Channel q;Energy keV")
     graph.SetMarkerStyle(20)
@@ -109,21 +111,53 @@ for det in [1, 2]:
     graph.SetMarkerSize(1.2)
     graph.Write()
 
-    # Linear function
+    # Linear fit
     f_lin = ROOT.TF1(f"calibration_det{det}", "[0]*x + [1]", 0, max_q)
     f_lin.SetParameter(0, 0.0018)
     f_lin.SetParameter(1, -30)
     graph.Fit(f_lin, "Q")  # Quiet fit
     calibration_tf1[det] = f_lin
     f_lin.Write()
+
     print(f"\nDetector {det} calibration: E(q) = {f_lin.GetParameter(0):.6f} * q + {f_lin.GetParameter(1):.3f} keV")
+    print(f"  chi2/ndf = {f_lin.GetChisquare():.2f}/{f_lin.GetNDF()}")
 
     # Create canvas and plot
     c = ROOT.TCanvas(f"c_cal_det{det}", f"Calibration Detector {det}", 800, 600)
     graph.Draw("AP")
     f_lin.Draw("same")
     c.SetGrid()
+
+    # Annotate points with source name and energy (dynamic offsets)
+    latex = ROOT.TLatex()
+    latex.SetTextSize(0.025)
+    latex.SetTextColor(ROOT.kBlack)
+
+    idx = 0
+    y_offsets = [0.02, 0.04, -0.02, -0.04]
+    x_offsets = [0.01, 0.015, -0.01, -0.015]
+
+    for source, gammas in sources.items():
+        for E_gamma in gammas:
+            q_val = channels[det][idx]
+            y_offset = y_offsets[idx % len(y_offsets)] * max(energies[det])
+            x_offset = x_offsets[idx % len(x_offsets)] * max_q
+            latex.DrawLatex(q_val + x_offset, E_gamma + y_offset, f"{source} {E_gamma} keV")
+            idx += 1
+
+    # Annotate fit parameters and chi2
+    slope = f_lin.GetParameter(0)
+    intercept = f_lin.GetParameter(1)
+    chi2 = f_lin.GetChisquare()
+    ndf = f_lin.GetNDF()
+    latex.DrawLatex(0.05 * max_q, 0.9 * max(energies[det]),
+                    f"E(q) = {slope:.6f} * q + {intercept:.3f} keV")
+    latex.DrawLatex(0.05 * max_q, 0.85 * max(energies[det]),
+                    f"chi2/ndf = {chi2:.2f}/{ndf}")
+
+    # Save annotated plot
     c.SaveAs(f"calibration_detector_{det}.png")
 
 out_file.Close()
 print("Calibration saved in calibration.root")
+
