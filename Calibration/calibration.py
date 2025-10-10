@@ -39,6 +39,7 @@ def get_peak_centroid(hist, peak_guess, window=20):
 # Prepare per-detector data containers
 channels = {1: [], 2: []}
 energies = {1: [], 2: []}
+labels = {1: [], 2: []}  # <-- for labeling points
 
 # Determine max_q across all files
 max_q = 0
@@ -91,11 +92,12 @@ for source, gammas in sources.items():
             print(f"  Detector {det} Gamma {E_gamma} keV → channel {centroid_q:.2f}")
             channels[det].append(centroid_q)
             energies[det].append(E_gamma)
+            labels[det].append(f"{source} {E_gamma} keV")  # <-- label added
 
         hist_det[det].SetDirectory(out_file)
         hist_det[det].Write()
 
-# Fit and plot
+# Fit and plot per detector
 calibration_tf1 = {}
 for det in [1, 2]:
     n_points = len(channels[det])
@@ -107,7 +109,7 @@ for det in [1, 2]:
         np.full(n_points, err_E, dtype=np.float64)
     )
     graph.SetName(f"graph_cal_det{det}")
-    graph.SetTitle("")  # no main title
+    graph.SetTitle("")
     graph.SetMarkerStyle(20)
     graph.SetMarkerColor(ROOT.kBlue)
     graph.SetLineColor(ROOT.kRed)
@@ -129,64 +131,146 @@ for det in [1, 2]:
 
     print(f"\nDetector {det} calibration: E(Channel) = {slope:.6f} ± {sigma_m:.6f} * Channel {intercept:+.3f} ± {sigma_b:.3f} keV")
 
-    # Canvas
     c = ROOT.TCanvas(f"c_cal_det{det}", f"Calibration Detector {det}", 800, 600)
     graph.Draw("AP")
     f_lin.Draw("same")
     c.SetGrid()
 
-    # Add X-axis and Y-axis margins
     x_min = min(channels[det]) * 0.95
     x_max = max(channels[det]) * 1.05
-    graph.GetXaxis().SetRangeUser(x_min, x_max)
     ymin = min(energies[det]) * 0.85
     ymax = max(energies[det]) * 1.20
+    graph.GetXaxis().SetRangeUser(x_min, x_max)
     graph.GetYaxis().SetRangeUser(ymin, ymax)
-
     graph.GetXaxis().SetTitle("Channel")
     graph.GetYaxis().SetTitle("Energy (keV)")
 
-    # Labels stacked above the fit line
-    latex = ROOT.TLatex()
-    latex.SetTextSize(0.022)
-    latex.SetTextFont(42)
-    latex.SetTextColor(ROOT.kBlack)
-
-    points = []
-    idx = 0
-    for source, gammas in sources.items():
-        for E_gamma in gammas:
-            points.append((channels[det][idx], E_gamma, f"{source} {E_gamma} keV"))
-            idx += 1
-    points.sort(key=lambda x: x[1])
-    
-    stacked_y = []
-    for q_val, E_gamma, label in points:
-        y_fit = f_lin.Eval(q_val)
-        y_label = y_fit + 20  # base offset above fit
-        for sy in stacked_y:
-            if abs(y_label - sy) < 10:
-                y_label += 10
-        latex.DrawLatex(q_val, y_label, label)
-        stacked_y.append(y_label)
-
-    # Legend for fit & points (taller, padded, no shadow)
+    # Legend
     legend = ROOT.TLegend(0.15, 0.78, 0.40, 0.88)
     legend.SetFillColor(ROOT.kWhite)
-    legend.SetFillStyle(1001)   # solid fill, no shadow
+    legend.SetFillStyle(1001)
     legend.SetBorderSize(2)
-    legend.SetMargin(0.2)       # padding inside
+    legend.SetMargin(0.2)
     legend.SetTextSize(0.020)
     legend.SetTextFont(42)
-    legend.SetShadowColor(0)
-    legend.SetEntrySeparation(0.008)  # spacing between lines
     legend.AddEntry(graph, "Measured calibration points", "P")
     legend.AddEntry(f_lin, "Fitted calibration line", "L")
     legend.Draw()
 
-    # Save PDF
     c.SaveAs(f"calibration_detector_{det}.pdf")
+
+# ------------------------------------------------------------
+# Combined calibration plot (Detector 1 vs Detector 2, black labels close to line)
+# ------------------------------------------------------------
+print("\nCreating combined calibration plot...")
+
+if all(len(channels[det]) > 0 for det in (1, 2)):
+    c_combined = ROOT.TCanvas("c_cal_combined", "Combined Calibration", 900, 650)
+    c_combined.SetGrid()
+    ROOT.gStyle.SetOptStat(0)
+    c_combined.SetTicks(1, 1)
+
+    # Determine global axis limits
+    all_x = np.concatenate([channels[1], channels[2]])
+    all_y = np.concatenate([energies[1], energies[2]])
+    x_min, x_max = min(all_x) * 0.95, max(all_x) * 1.05
+    y_min, y_max = min(all_y) * 0.85, max(all_y) * 1.20
+
+    # Detector 1 graph (red)
+    g1 = ROOT.TGraphErrors(
+        len(channels[1]),
+        np.array(channels[1], dtype=np.float64),
+        np.array(energies[1], dtype=np.float64),
+        np.full(len(channels[1]), err_q, dtype=np.float64),
+        np.full(len(channels[1]), err_E, dtype=np.float64)
+    )
+    g1.SetMarkerStyle(20)
+    g1.SetMarkerColor(ROOT.kRed + 1)
+    g1.SetLineColor(ROOT.kRed + 1)
+    g1.SetLineWidth(2)
+    g1.SetTitle("")
+    g1.GetXaxis().SetTitle("Channel")
+    g1.GetYaxis().SetTitle("Energy (keV)")
+    g1.GetXaxis().SetLimits(x_min, x_max)
+    g1.GetYaxis().SetRangeUser(y_min, y_max)
+    g1.Draw("AP")
+
+    # Detector 2 graph (blue)
+    g2 = ROOT.TGraphErrors(
+        len(channels[2]),
+        np.array(channels[2], dtype=np.float64),
+        np.array(energies[2], dtype=np.float64),
+        np.full(len(channels[2]), err_q, dtype=np.float64),
+        np.full(len(channels[2]), err_E, dtype=np.float64)
+    )
+    g2.SetMarkerStyle(21)
+    g2.SetMarkerColor(ROOT.kBlue + 1)
+    g2.SetLineColor(ROOT.kBlue + 1)
+    g2.SetLineWidth(2)
+    g2.Draw("P SAME")
+
+    # Clone and draw fitted lines
+    f1_clone, f2_clone = None, None
+    if 1 in calibration_tf1:
+        f1_clone = calibration_tf1[1].Clone("f1_clone")
+        f1_clone.SetLineColor(ROOT.kRed + 1)
+        f1_clone.SetLineWidth(2)
+        f1_clone.Draw("SAME")
+    if 2 in calibration_tf1:
+        f2_clone = calibration_tf1[2].Clone("f2_clone")
+        f2_clone.SetLineColor(ROOT.kBlue + 1)
+        f2_clone.SetLineWidth(2)
+        f2_clone.Draw("SAME")
+
+# --- Labels (Detector 2, bold black with exaggerated white edge) ---
+latex = ROOT.TLatex()
+latex.SetTextSize(0.020)
+latex.SetTextFont(62)  # bold Helvetica
+
+if f2_clone:
+    used_y = []
+    for xi, yi, label in sorted(zip(channels[2], energies[2], labels[2]), key=lambda t: t[1]):
+        y_fit = f2_clone.Eval(xi)
+        y_label = y_fit + 20  # slight offset above the fit line
+        for y_prev in used_y:
+            if abs(y_label - y_prev) < 15:
+                y_label = y_prev + 15
+
+        # Draw exaggerated white halo by multiple offsets
+        latex.SetTextColor(ROOT.kWhite)
+        offsets = [-0.5, 0, 0.5]
+        for dx in offsets:
+            for dy in offsets:
+                if dx == 0 and dy == 0:
+                    continue
+                latex.DrawLatex(xi + dx, y_label + dy, label)
+
+        # Draw actual text in black on top
+        latex.SetTextColor(ROOT.kBlack)
+        latex.DrawLatex(xi, y_label, label)
+
+        used_y.append(y_label)
+
+    # --- Legend ---
+    legend = ROOT.TLegend(0.12, 0.75, 0.45, 0.88)
+    legend.SetBorderSize(1)
+    legend.SetFillColor(ROOT.kWhite)
+    legend.SetTextSize(0.022)
+    legend.AddEntry(g1, "Detector 1 data", "P")
+    legend.AddEntry(g2, "Detector 2 data", "P")
+    if f1_clone:
+        legend.AddEntry(f1_clone, "Detector 1 fit", "L")
+    if f2_clone:
+        legend.AddEntry(f2_clone, "Detector 2 fit", "L")
+    legend.Draw()
+
+    c_combined.Write()
+    c_combined.SaveAs("calibration_combined.pdf")
+    print("→ Combined calibration saved as calibration_combined.pdf")
+else:
+    print("Skipping combined plot (missing calibration data for one or both detectors).")
+
+
 
 out_file.Close()
 print("Calibration saved in calibration.root and plots saved as PDF.")
-
